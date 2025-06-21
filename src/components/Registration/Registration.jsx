@@ -1,5 +1,15 @@
+import { useState } from "react";
 import regImg from "../../assets/regImg.png";
 export default function Registration() {
+  const [email, setEmail] = useState("")
+  const handleEmail = (e) => {
+    setEmail(e.target.value);
+    
+  }
+  const handleRegistration = () =>{
+    console.log(email);
+    
+  }
   return (
     <>
       <div className="flex">
@@ -15,6 +25,7 @@ export default function Registration() {
           <div className="mt-[40px]">
             <div className="relative">
               <input
+                onChange={handleEmail}
                 type="email"
                 id="floating_outlinded"
                 className="block px-[52px] py-[26px] font-nunito font-semibold text-[20.64px] border-[2px] border-[rgba(17,23,93,0.3)] focus:outline-none  rounded-[8.6px] appearance-none peer"
@@ -59,7 +70,8 @@ export default function Registration() {
           <div>
             <div className="mt-[51px]">
               <div className="bg-black rounded-[86px] w-[352px]">
-                <button
+                <button 
+                 onClick={handleRegistration}
                   style={{
                     background: "#5B36F5",
                     background:
