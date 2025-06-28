@@ -2,8 +2,14 @@ import { useState } from "react";
 import regImg from "../../assets/regImg.png";
 import { FaEyeSlash, FaLeaf } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { sendEmailVerification } from "firebase/auth";
+import { Navigate, useNavigate } from "react-router";
+import { Bounce, ToastContainer, toast } from "react-toastify";
 
 export default function Registration() {
+  const auth = getAuth();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
@@ -54,16 +60,48 @@ export default function Registration() {
         setPasswordErr("give at least one  special character (!@#$%^&*)");
       }
     }
-    if (email && fullName && password) {
-      console.log("successful");
-      setEmail("")
-      setFullName("")
-      setPassword("")
+    if (
+      email &&
+      fullName &&
+      password &&
+      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{8,})+$/.test(email)
+    ) {
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          sendEmailVerification(auth.currentUser)
+          toast.success("successfully done");
+          setTimeout(() => {
+            navigate("/Login");
+          }, 2000);
+          setEmail("");
+          setFullName("");
+          setPassword("");
+        })
+        .catch((error) => {
+          console.log(error);
+          const err = error.message;
+          if (err.includes("auth/email-already-in-use")) {
+            setEmailerr("this email already exist");
+          }
+        });
     }
   };
   return (
     <>
       <div className="flex">
+        <ToastContainer
+          position="top-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick={false}
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+          transition={Bounce}
+        />
         <div className="w-[60%] pl-[350px] pt-[150px]">
           <div>
             <h1 className="font-nunito font-bold text-[34.4px] text-registrationPrimary">
@@ -138,7 +176,7 @@ export default function Registration() {
                 />
               )}
             </div>
-            <p className="text-red-500 font-poppins">{passwordErr}</p>
+            <p className="text-red-500 font-poppins text-[10px]">{passwordErr}</p>
           </div>
           <div>
             <div className="mt-[51px]">
@@ -150,7 +188,7 @@ export default function Registration() {
                     background:
                       "radial-gradient(circle,rgba(91, 54, 245, 0.25) 0%, rgba(30, 30, 30, 1) 31%)",
                   }}
-                  className="font-nunito font-semibold text-[20.64px] text-white py-[19px] px-[140px] bg-[#1E1E1E] rounded-[86px] "
+                  className="font-nunito font-semibold text-[20.64px] text-white py-[19px] px-[140px] bg-[#1E1E1E] rounded-[86px] cursor-pointer"
                 >
                   Sign up
                 </button>
