@@ -6,6 +6,8 @@ import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { sendEmailVerification } from "firebase/auth";
 import { Navigate, useNavigate } from "react-router";
 import { Bounce, ToastContainer, toast } from "react-toastify";
+import { ScaleLoader } from "react-spinners";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Registration() {
   const auth = getAuth();
@@ -14,10 +16,28 @@ export default function Registration() {
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
+  // const [emailExist, setEmailExist] = useState("");
 
   const [emailerr, setEmailerr] = useState("");
   const [fullNameErr, setFullNameErr] = useState("");
   const [passwordErr, setPasswordErr] = useState("");
+  const [loder, setLoder] = useState(false);
+
+  function CustomToast({ isPaused, closeToast }) {
+    return (
+      <div className="text-white font-nunito">
+        <p>✅ Registration successful! Redirecting...</p>
+        <div className="mt-2 h-[6px] w-full bg-gray-700 rounded-full overflow-hidden relative">
+          <div
+            className={`absolute top-0 left-0 h-full bg-green-500 animate-toastProgress ${
+              isPaused ? "paused" : ""
+            }`}
+            onAnimationEnd={closeToast}
+          ></div>
+        </div>
+      </div>
+    );
+  }
 
   const handleEmail = (e) => {
     setEmail(e.target.value);
@@ -58,32 +78,42 @@ export default function Registration() {
         setPasswordErr("give at least one numeric character (0-9)");
       } else if (!/(?=.*[!@#$%^&*])/.test(password)) {
         setPasswordErr("give at least one  special character (!@#$%^&*)");
+      } else {
+        if (
+          email &&
+          fullName &&
+          password &&
+          /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)
+        ) {
+          setLoder(true);
+          createUserWithEmailAndPassword(auth, email, password)
+            .then(() => {
+              sendEmailVerification(auth.currentUser);
+              setLoder(false);
+              toast((props) => <CustomToast {...props} />, {
+                autoClose: false,
+                closeButton: false,
+                hideProgressBar: true,
+                draggable: false,
+                pauseOnHover: true,
+              });
+
+              setTimeout(() => {
+                navigate("/Login");
+              }, 2000);
+              setEmail("");
+              setFullName("");
+              setPassword("");
+            })
+            .catch((error) => {
+              console.log(error);
+              const err = error.message;
+              if (err.includes("auth/email-already-in-use")) {
+                setEmailerr("this email already exist");
+              }
+            });
+        }
       }
-    }
-    if (
-      email &&
-      fullName &&
-      password &&
-      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{8,})+$/.test(email)
-    ) {
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          sendEmailVerification(auth.currentUser)
-          toast.success("successfully done");
-          setTimeout(() => {
-            navigate("/Login");
-          }, 2000);
-          setEmail("");
-          setFullName("");
-          setPassword("");
-        })
-        .catch((error) => {
-          console.log(error);
-          const err = error.message;
-          if (err.includes("auth/email-already-in-use")) {
-            setEmailerr("this email already exist");
-          }
-        });
     }
   };
   return (
@@ -176,7 +206,9 @@ export default function Registration() {
                 />
               )}
             </div>
-            <p className="text-red-500 font-poppins text-[10px]">{passwordErr}</p>
+            <p className="text-red-500 font-poppins text-[10px]">
+              {passwordErr}
+            </p>
           </div>
           <div>
             <div className="mt-[51px]">
@@ -190,7 +222,11 @@ export default function Registration() {
                   }}
                   className="font-nunito font-semibold text-[20.64px] text-white py-[19px] px-[140px] bg-[#1E1E1E] rounded-[86px] cursor-pointer"
                 >
-                  Sign up
+                  {loder ? (
+                    <ScaleLoader color="#ffffff" height={20} />
+                  ) : (
+                    "Sign up"
+                  )}
                 </button>
               </div>
             </div>

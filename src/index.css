@@ -10,3 +10,19 @@
   --color-registrationSecondary: #11175D;
   --color-loginPrimary: #03014C;
 }
+@keyframes shrinkProgress {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+.animate-toastProgress {
+  animation: shrinkProgress 2s linear forwards;
+}
+
+.paused {
+  animation-play-state: paused;
+}
