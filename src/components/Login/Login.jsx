@@ -4,7 +4,9 @@ import { FaEyeSlash, FaLeaf } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
 import { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router";
+import { Bounce, ToastContainer, toast } from "react-toastify";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { ScaleLoader } from "react-spinners";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -13,22 +15,41 @@ export default function Login() {
   const [show, setShow] = useState(false);
   const [emailErr, setEmailErr] = useState("");
   const [passwordErr, setPasswordErr] = useState("");
+  const [loder, setLoder] = useState(false);
 
   const auth = getAuth();
 
+  function CustomToast({ isPaused, closeToast }) {
+    return (
+      <div className="text-white font-nunito">
+        <p>✅your Log in successful! Let's Go to Home Page</p>
+        <div className="mt-2 h-[6px] w-full bg-gray-700 rounded-full overflow-hidden relative">
+          <div
+            className={`absolute top-0 left-0 h-full bg-green-500 animate-toastProgress ${
+              isPaused ? "paused" : ""
+            }`}
+            onAnimationEnd={closeToast}
+          ></div>
+        </div>
+      </div>
+    );
+  }
+
   const passwordHandler = (e) => {
     setPassword(e.target.value);
-    setPasswordErr("")
+    setPasswordErr("");
+    setLoder(false)
   };
 
   const emailHandle = (e) => {
+    setLoder(false)
     setEmail(e.target.value);
-    setEmailErr("")
+    setEmailErr("");
   };
 
   const loginHandler = () => {
     if (!email) {
-      setEmailErr("Plz enter Email")
+      setEmailErr("Plz enter Email");
     }
     if (!password) {
       setPasswordErr("Plz enter password");
@@ -45,17 +66,33 @@ export default function Login() {
         setPasswordErr("give at least one  special character (!@#$%^&*)");
       } else {
         if (email) {
+          setLoder(true);
           // console.log("ok");
           signInWithEmailAndPassword(auth, email, password)
             .then((user) => {
               console.log(user);
               console.log("successful");
-              navigate("/home")
+              setLoder(false);
+              toast((props) => <CustomToast {...props} />, {
+                autoClose: false,
+                closeButton: false,
+                hideProgressBar: true,
+                draggable: false,
+                pauseOnHover: true,
+              });
+
+              setTimeout(() => {
+                navigate("/home");
+              }, 2000);
+              setEmail("")
+              setPassword("")
+              setLoder(false)
             })
             .catch((error) => {
               const errorCode = error.message;
               if (errorCode.includes("auth/invalid-credential")) {
                 setEmailErr("Not varified Email");
+                setLoder(false)
               }
 
               // const errorMessage = error.message;
@@ -67,6 +104,19 @@ export default function Login() {
   return (
     <>
       <div className="flex">
+        <ToastContainer
+          position="top-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick={false}
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+          transition={Bounce}
+        />
         <div className="w-[60%] flex flex-col justify-center items-center">
           <div>
             <h1 className="font-openSans font-bold text-[33.34px] text-loginPrimary">
@@ -130,7 +180,11 @@ export default function Login() {
                     }}
                     className="font-nunito w-full font-semibold text-[20.64px] text-white py-[19px] px-[92px] bg-[#1E1E1E] rounded-[86px] "
                   >
-                    Login to Continue
+                    {loder ? (
+                      <ScaleLoader color="#ffffff" height={18} />
+                    ) : (
+                      "Login to Continue"
+                    )}
                   </button>
                 </div>
               </div>

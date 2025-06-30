@@ -1,5 +1,7 @@
 import React from "react";
 import Profile from "../../assets/Mayzidpic.JPG";
+import Profile1 from "../../assets/Profile1.png"
+import Profile2 from "../../assets/profile2.png"
 import { CiSearch } from "react-icons/ci";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { FaPlus } from "react-icons/fa";
@@ -9,20 +11,20 @@ export const Userlist = () => {
   // maping for Friends----
   const groupList = [
     {
-      img: Profile,
-      name: "kazi mayzid",
+      img: Profile2,
+      name: "Adam ambros",
       message: "how are you",
       icon: <FaPlus />,
     },
     {
-      img: Profile,
-      name: "kazi mayzid",
+      img: Profile1,
+      name: "Johan",
       message: "how are you",
       icon: <FaPlus />,
     },
     {
-      img: Profile,
-      name: "kazi mayzid",
+      img: Profile2,
+      name: "Adam ambros",
       message: "how are you",
       icon: <FaPlus />,
     },
