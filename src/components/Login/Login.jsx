@@ -19,6 +19,8 @@ export default function Login() {
 
   const auth = getAuth();
 
+  const strongPasswordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
   function CustomToast({ isPaused, closeToast }) {
     return (
       <div className="text-white font-nunito">
@@ -38,67 +40,86 @@ export default function Login() {
   const passwordHandler = (e) => {
     setPassword(e.target.value);
     setPasswordErr("");
-    setLoder(false)
+    setLoder(false);
   };
 
   const emailHandle = (e) => {
-    setLoder(false)
+    setLoder(false);
     setEmail(e.target.value);
     setEmailErr("");
   };
 
   const loginHandler = () => {
+    setPasswordErr("");
+    setLoder(true);
     if (!email) {
-      setEmailErr("Plz enter Email");
+      setTimeout(() => {
+        setEmailErr("Plz enter Email");
+        setLoder(false);
+      }, 1000);
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setTimeout(() => {
+        setEmailErr("Email format is not right");
+        setLoder(false);
+      }, 1000);
     }
     if (!password) {
-      setPasswordErr("Plz enter password");
+      setTimeout(() => {
+        setPasswordErr("Plz enter password");
+        setLoder(false);
+      }, 1000);
     } else {
-      if (!/(?=.{8,})/.test(password)) {
-        setPasswordErr("Password must be eight characters or longer");
-      } else if (!/(?=.*[a-z])/.test(password)) {
-        setPasswordErr("give at least one small letter (a-z)");
-      } else if (!/(?=.*[A-Z])/.test(password)) {
-        setPasswordErr("give at least one capital letter (A-Z)");
-      } else if (!/(?=.*[0-9])/.test(password)) {
-        setPasswordErr("give at least one numeric character (0-9)");
-      } else if (!/(?=.*[!@#$%^&*])/.test(password)) {
-        setPasswordErr("give at least one  special character (!@#$%^&*)");
-      } else {
-        if (email) {
-          setLoder(true);
-          // console.log("ok");
-          signInWithEmailAndPassword(auth, email, password)
-            .then((user) => {
-              console.log(user);
-              console.log("successful");
-              setLoder(false);
-              toast((props) => <CustomToast {...props} />, {
-                autoClose: false,
-                closeButton: false,
-                hideProgressBar: true,
-                draggable: false,
-                pauseOnHover: true,
+      setTimeout(() => {
+        if (!strongPasswordRegex.test(password)) {
+          setPasswordErr(
+            `Password must be 8+ characters with or uppercase,
+             lowercase, number, and special character.`
+          );
+        } else {
+          if (email && password && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            setLoder(true);
+            // console.log("ok");
+            signInWithEmailAndPassword(auth, email, password)
+              .then((userCredential) => {
+                console.log(userCredential);
+                const user = userCredential.user;
+                setLoder(false);
+                if (user.emailVerified) {
+                  toast((props) => <CustomToast {...props} />, {
+                    autoClose: false,
+                    closeButton: false,
+                    hideProgressBar: true,
+                    draggable: false,
+                    pauseOnHover: true,
+                  });
+
+                  setTimeout(() => {
+                    navigate("/home");
+                  }, 2000);
+                  setEmail("");
+                  setPassword("");
+                  setLoder(false);
+                } else {
+                  toast.error(
+                    "Your email is not verified. Please verify and try again."
+                  );
+                  setEmailErr("");
+                }
+              })
+              .catch((error) => {
+                const errorCode = error.message;
+                console.log(errorCode);
+
+                if (errorCode.includes("auth/invalid-credential")) {
+                  toast.error("Plz enter right email & password");
+                  setLoder(false);
+                }
               });
-
-              setTimeout(() => {
-                navigate("/home");
-              }, 2000);
-              setEmail("")
-              setPassword("")
-              setLoder(false)
-            })
-            .catch((error) => {
-              const errorCode = error.message;
-              if (errorCode.includes("auth/invalid-credential")) {
-                setEmailErr("Not varified Email");
-                setLoder(false)
-              }
-
-              // const errorMessage = error.message;
-            });
+          }
         }
-      }
+        setLoder(false);
+      }, 1000);
+      setEmailErr(false);
     }
   };
   return (
@@ -106,7 +127,7 @@ export default function Login() {
       <div className="flex">
         <ToastContainer
           position="top-center"
-          autoClose={5000}
+          autoClose={2000}
           hideProgressBar={false}
           newestOnTop={false}
           closeOnClick={false}
@@ -166,7 +187,18 @@ export default function Login() {
                   />
                 )}
               </div>
-              <p className="text-red-500 font-poppins">{passwordErr}</p>
+              <p className="text-red-500 font-poppins text-[10px]">
+                {passwordErr && (
+                  <>
+                    <p className="text-red-500 font-poppins text-[10px]">
+                      {passwordErr.split(" or ")[0]}{" "}
+                    </p>
+                    <p className="text-red-500 font-poppins text-[10px]">
+                      {passwordErr.split(" or ")[1]}
+                    </p>
+                  </>
+                )}
+              </p>
             </div>
             <div>
               <div className="mt-[51px]">
@@ -197,6 +229,12 @@ export default function Login() {
                   Sign up
                 </Link>
               </p>
+            </div>
+            <div className="mt-5">
+              <Link to="/forgetPassword"
+               className="font-poppins text-loginPrimary hover:text-red-400 duration-500">
+                  Forgotten Password ?
+            </Link>
             </div>
           </div>
         </div>
