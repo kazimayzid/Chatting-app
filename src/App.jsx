@@ -1,6 +1,9 @@
 import "./App.css";
 import Login from "./components/Login/Login";
 import Registration from "./components/Registration/Registration";
+import Home from "./pages/Home/Home"
+import Message from "./pages/Message/Message";
+import Settings from "./pages/Settings/Settings";
 import {
   createBrowserRouter,
   RouterProvider,
@@ -11,8 +14,19 @@ const router = createBrowserRouter([
     element: <Registration/>
   },
   {
-    path: "/Login",
+    path: "/login",
     element: <Login/>
+  },{
+    path:"/home",
+    element: <Home/>
+  },
+  {
+    path: "/message",
+    element: <Message/>
+  },
+   {
+    path: "/settings",
+    element: <Settings/>
   }
 ])
 
