@@ -1,7 +1,7 @@
 import React from "react";
 import Profile from "../../assets/Mayzidpic.JPG";
-import Profile1 from "../../assets/Profile1.png"
-import Profile2 from "../../assets/profile2.png"
+import Profile1 from "../../assets/Profile1.png";
+import Profile2 from "../../assets/profile2.png";
 import { CiSearch } from "react-icons/ci";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 export const Grouplist = () => {
@@ -48,24 +48,28 @@ export const Grouplist = () => {
   // Logic for design End==============================
   return (
     <>
-      <div>
-        <div className="relative">
-          <input
-            type="search"
-            placeholder="Search"
-            className="w-full px-4 border focus:outline-none placeholder:font-poppins placeholder:font-medium placeholder:text-[16px] placeholder:text-[rgba(61,61,61,0.35)] py-[17px] pl-[75px] rounded-[20px] border-none shadow-xl/20"
-          />
-          <CiSearch className="absolute top-[50%] translate-[-50%] left-[23px] w-[19px] h-[19px] text-black text-[5px] font-bold  " />
-          <PiDotsThreeVerticalBold className="absolute top-[50%] translate-[-50%] right-[23px] w-[19px] h-[19px] text-black text-[5px] font-bold " />
-        </div>
-        <div className="shadow-xl/20 mt-[43px] pt-[13px] px-[22px] rounded-[20px]  h-[300px]  overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent pr-[2px]">
-          <div className="flex justify-between items-center">
+      <div className="h-[100%]">
+        <div className="">
+          <div className="flex justify-between items-center px-4">
             <p className="font-poppins font-semibold text-[20px] text-black">
               Groups List
             </p>
             <PiDotsThreeVerticalBold className=" w-[19px] h-[19px] text-black text-[5px] font-bold " />
           </div>
-          <div className="mt-[17px]">
+
+          <div className="relative">
+            <input
+              type="search"
+              placeholder="Search"
+              className="w-full px-4 border focus:outline-none placeholder:font-poppins placeholder:font-medium placeholder:text-[16px] placeholder:text-[rgba(61,61,61,0.35)] py-[17px] pl-[75px] rounded-[20px] border-none shadow-xl/20"
+            />
+            <CiSearch className="absolute top-[50%] translate-[-50%] left-[23px] w-[19px] h-[19px] text-black text-[5px] font-bold  " />
+            <PiDotsThreeVerticalBold className="absolute top-[50%] translate-[-50%] right-[23px] w-[19px] h-[19px] text-black text-[5px] font-bold " />
+          </div>
+        </div>
+
+        <div className=" mt-[4px] pt-[13px] px-[22px] rounded-[20px] overflow-y-auto h-[85%] pr-[2px]">
+          <div className="">
             {groupList.map((group, index) => (
               <div className="flex items-center justify-between pb-[13px] mb-[13px] border-b-[1px] border-[rgba(0,0,0,0.25)]">
                 <div className="flex items-center">
