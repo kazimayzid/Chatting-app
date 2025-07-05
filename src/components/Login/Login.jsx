@@ -7,8 +7,11 @@ import { Link, Navigate, useNavigate } from "react-router";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { ScaleLoader } from "react-spinners";
+import { useDispatch } from "react-redux";
+import { userLogInfo } from "../../features/slice/userSlice";
 
 export default function Login() {
+  const dispatch = useDispatch()
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -83,6 +86,8 @@ export default function Login() {
               .then((userCredential) => {
                 console.log(userCredential);
                 const user = userCredential.user;
+                dispatch(userLogInfo(user))
+                localStorage.setItem("userInfo", JSON.stringify(user));
                 setLoder(false);
                 if (user.emailVerified) {
                   toast((props) => <CustomToast {...props} />, {
@@ -94,11 +99,11 @@ export default function Login() {
                   });
 
                   setTimeout(() => {
-                    navigate("/home");
+                    navigate("/home", {replace: true});
                   }, 2000);
                   setEmail("");
                   setPassword("");
-                  setLoder(false);
+                  // setLoder(false);
                 } else {
                   toast.error(
                     "Your email is not verified. Please verify and try again."

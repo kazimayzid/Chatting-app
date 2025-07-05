@@ -113,6 +113,7 @@ export default function Registration() {
               const err = error.message;
               if (err.includes("auth/email-already-in-use")) {
                 setEmailerr("this email already exist");
+                setLoder(false)
               }
             });
         }
