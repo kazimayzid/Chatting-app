@@ -14,7 +14,7 @@ export const Sidebar = () => {
   const handleLogout = () => {
     localStorage.removeItem("userInfo");
     dispatch(userLogInfo(null));
-    navigate("/login"); 
+    navigate("/login");
   };
 
   const navData = [
@@ -37,15 +37,17 @@ export const Sidebar = () => {
           {navData.map((value, index) => (
             <div
               key={index}
-              className="hover:bg-white text-white duration-300 hover:text-black pl-[45px] pr-[69px] py-[20px] rounded-l-[20px] relative text-[24px]"
+              className="relative z-10 hover:bg-white text-white hover:text-black pl-[45px] pr-[69px] py-[20px] rounded-l-[25px] text-[24px] after:absolute after:content-[''] after:top-0 after:right-0 after:w-[100%] after:h-[100%] after:bg-[#1E1E1E] after:rounded-l-[25px] hover:after:w-[8px] after:transition after:-z-10 transition-all"
             >
               {value.icon}
-              <div className="absolute top-0 right-0 w-[10px] h-full bg-[#1E1E1E] rounded-l-[20px]"></div>
             </div>
           ))}
         </div>
-        <div onClick={handleLogout} className="mb-[35px] mt-auto cursor-pointer">
-          <VscSignOut className="w-[46px] h-[49px] text-white" />
+        <div
+          onClick={handleLogout}
+          className="mb-[35px] mt-auto ml-[25px] cursor-pointer relative z-10 hover:bg-white text-white hover:text-black pl-[45px] pr-[69px] py-[20px] rounded-l-[25px] text-[24px] after:absolute after:content-[''] after:top-0 after:right-0 after:w-[100%] after:h-[100%] after:bg-[#1E1E1E] after:rounded-l-[25px] hover:after:w-[8px] after:transition after:-z-10 transition-all"
+        >
+          <VscSignOut className="w-[46px] h-[43px]" />
         </div>
       </div>
     </>
