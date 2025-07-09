@@ -57,18 +57,18 @@ export const Userlist = () => {
             </p>
             <PiDotsThreeVerticalBold className=" w-[19px] h-[19px] text-black text-[5px] font-bold " />
           </div>
-          <div className="relative">
+          <div className="relative mx-5">
             <input
               type="search"
               placeholder="Search"
-              className="w-full px-4 border focus:outline-none placeholder:font-poppins placeholder:font-medium placeholder:text-[16px] placeholder:text-[rgba(61,61,61,0.35)] py-[17px] pl-[75px] rounded-[20px] border-none shadow-xl/20"
+              className="w-full px-4 border focus:outline-none placeholder:font-poppins placeholder:font-medium placeholder:text-[16px] placeholder:text-[rgba(61,61,61,0.35)] py-[17px] pl-[75px] rounded-[20px] border-none shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
             />
             <CiSearch className="absolute top-[50%] translate-[-50%] left-[23px] w-[19px] h-[19px] text-black text-[5px] font-bold  " />
             <PiDotsThreeVerticalBold className="absolute top-[50%] translate-[-50%] right-[23px] w-[19px] h-[19px] text-black text-[5px] font-bold " />
           </div>
         </div>
-        <div className="shadow-xl/20 mt-[4px] px-[22px] rounded-[20px] h-[80%]  overflow-y-auto">
-          <div className="mt-[17px]">
+        <div className="shadow-2xl mt-[15px] px-[22px] rounded-[20px] h-[85%]  overflow-y-auto">
+          <div >
             {groupList.map((group, index) => (
               <div className="flex items-center justify-between pb-[13px] mb-[13px] border-b-[1px] border-[rgba(0,0,0,0.25)]">
                 <div className="flex items-center">
