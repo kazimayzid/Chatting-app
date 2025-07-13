@@ -2,13 +2,18 @@ import { useState } from "react";
 import regImg from "../../assets/regImg.png";
 import { FaEyeSlash, FaLeaf } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
 import { sendEmailVerification } from "firebase/auth";
 import { Navigate, useNavigate } from "react-router";
 import { Link } from "react-router";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import { ScaleLoader } from "react-spinners";
 import "react-toastify/dist/ReactToastify.css";
+import { getDatabase, ref, set } from "firebase/database";
 
 export default function Registration() {
   const auth = getAuth();
@@ -23,6 +28,7 @@ export default function Registration() {
   const [fullNameErr, setFullNameErr] = useState("");
   const [passwordErr, setPasswordErr] = useState("");
   const [loder, setLoder] = useState(false);
+  const db = getDatabase();
 
   function CustomToast({ isPaused, closeToast }) {
     return (
@@ -88,32 +94,44 @@ export default function Registration() {
         ) {
           setLoder(true);
           createUserWithEmailAndPassword(auth, email, password)
-            .then(() => {
-              sendEmailVerification(auth.currentUser);
-              console.log(auth.currentUser);
-              
-              setLoder(false);
-              toast((props) => <CustomToast {...props} />, {
-                autoClose: false,
-                closeButton: false,
-                hideProgressBar: true,
-                draggable: false,
-                pauseOnHover: true,
-              });
+            .then((createdUser) => {
+              updateProfile(auth.currentUser, {
+                displayName: fullName,
+              }).then(() => {
+                sendEmailVerification(auth.currentUser);
+                const currentUser = auth.currentUser;
+                console.log(currentUser, "see");
+                
 
-              setTimeout(() => {
-                navigate("/Login");
-              }, 2000);
-              setEmail("");
-              setFullName("");
-              setPassword("");
+                set(ref(db, "users/" + currentUser.uid), {
+                  username: currentUser.displayName,
+                  email: createdUser.user.email,
+                  time: new Date().toLocaleString(),
+                });
+
+                setLoder(false);
+                toast((props) => <CustomToast {...props} />, {
+                  autoClose: false,
+                  closeButton: false,
+                  hideProgressBar: true,
+                  draggable: false,
+                  pauseOnHover: true,
+                });
+
+                setTimeout(() => {
+                  navigate("/Login");
+                }, 2000);
+
+                setEmail("");
+                setFullName("");
+                setPassword("");
+              });
             })
             .catch((error) => {
               console.log(error);
-              const err = error.message;
-              if (err.includes("auth/email-already-in-use")) {
-                setEmailerr("this email already exist");
-                setLoder(false)
+              if (error.message.includes("auth/email-already-in-use")) {
+                setEmailerr("this email already exists");
+                setLoder(false);
               }
             });
         }
@@ -236,7 +254,10 @@ export default function Registration() {
             </div>
             <p className="ml-[75px] mt-[35px] font-openSans font-normal text-[13.34px] text-[#03014C]">
               Already have an account ?{" "}
-              <Link to="/login" className="font-openSans font-bold text-[13.34px] text-[#EA6C00]">
+              <Link
+                to="/login"
+                className="font-openSans font-bold text-[13.34px] text-[#EA6C00]"
+              >
                 Sign In
               </Link>
             </p>

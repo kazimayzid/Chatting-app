@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 export default function Home() {
   const navigate = useNavigate();
   const data = useSelector((state) => state.user.value);
-  console.log(data, "jkej");
+  console.log(data);
 
   const [loading, setLoading] = useState(true);
   useEffect(() => {

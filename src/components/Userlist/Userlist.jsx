@@ -1,52 +1,38 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Profile from "../../assets/Mayzidpic.JPG";
 import Profile1 from "../../assets/Profile1.png";
 import Profile2 from "../../assets/profile2.png";
 import { CiSearch } from "react-icons/ci";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { FaPlus } from "react-icons/fa";
+import { getDatabase, ref, onValue } from "firebase/database";
+import { useSelector } from "react-redux";
 
 export const Userlist = () => {
-  // logic for design Start================
-  // maping for Friends----
-  const groupList = [
-    {
-      img: Profile2,
-      name: "Adam ambros",
-      message: "how are you",
-      icon: <FaPlus />,
-    },
-    {
-      img: Profile1,
-      name: "Johan",
-      message: "how are you",
-      icon: <FaPlus />,
-    },
-    {
-      img: Profile2,
-      name: "Adam ambros",
-      message: "how are you",
-      icon: <FaPlus />,
-    },
-    {
-      img: Profile,
-      name: "kazi mayzid",
-      message: "how are you",
-      icon: <FaPlus />,
-    },
-    {
-      img: Profile,
-      name: "kazi mayzid",
-      message: "how are you",
-      icon: <FaPlus />,
-    },
-    {
-      img: Profile,
-      name: "kazi mayzid",
-      message: "how are you",
-      icon: <FaPlus />,
-    },
-  ];
+  const data = useSelector(state => state.user.value)
+  console.log(data, "hwllo");
+  
+  const db = getDatabase();
+  const [userlist, setUserList] = useState([])
+  useEffect(() => {
+    const starCountRef = ref(db, "users/");
+    onValue(starCountRef, (snapshot) => {
+      let userListAry = [];
+      snapshot.forEach((items) => {
+        if (data.uid !== items.key) {
+          
+          userListAry.push(items.val());
+        }
+      });
+      setUserList(userListAry);
+     
+     
+    });
+  }, []);
+
+  const handleRequest
+
+  
   return (
     <>
       <div className="h-[100%]">
@@ -68,27 +54,27 @@ export const Userlist = () => {
           </div>
         </div>
         <div className="shadow-2xl mt-[15px] px-[22px] rounded-[20px] h-[85%]  overflow-y-auto">
-          <div >
-            {groupList.map((group, index) => (
+          <div>
+            {userlist.map((user, index) => (
               <div className="flex items-center justify-between pb-[13px] mb-[13px] border-b-[1px] border-[rgba(0,0,0,0.25)]">
                 <div className="flex items-center">
                   <div
                     key={index}
                     className="w-[70px] h-[70px] bg-center bg-cover rounded-full"
-                    style={{ backgroundImage: `url(${group.img})` }}
+                    style={{ backgroundImage: `url(${user.profile ? user.profile : Profile})`, }}
                   ></div>
                   <div className="ml-[14px]">
                     <h1 className="font-poppins font-semibold text-lg text-black">
-                      {group.name}
+                      {user.username}
                     </h1>
                     <p className="font-poppins font-medium text-[14px] text-homePrimary">
-                      {" "}
-                      {group.message}
+                      
+                      {user.email}
                     </p>
                   </div>
                 </div>
                 <button className="text-black hover:text-white hover:bg-black px-[8px] py-[4px] rounded-[5px]">
-                  {group.icon}
+                  <FaPlus onClick={()=>handleRequest(items)}/>
                 </button>
               </div>
             ))}

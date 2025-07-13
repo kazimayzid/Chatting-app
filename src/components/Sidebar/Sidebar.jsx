@@ -3,11 +3,14 @@ import { AiOutlineHome } from "react-icons/ai";
 import { AiTwotoneMessage } from "react-icons/ai";
 import { IoSettingsOutline } from "react-icons/io5";
 import { VscSignOut } from "react-icons/vsc";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { userLogInfo } from "../../features/slice/userSlice";
 import { useNavigate } from "react-router-dom";
 
 export const Sidebar = () => {
+  const data = useSelector(state=> state.user.value);
+  console.log(data, "two");
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -33,6 +36,7 @@ export const Sidebar = () => {
     <>
       <div className="flex flex-col h-full items-center gap-5">
         <div className="rounded-full w-[100px] h-[100px] bg-[url(assets/Mayzidpic.JPG)] bg-center bg-cover bg-no-repeat"></div>
+        <p className="text-white font-poppins text-[16px]">{data.displayName}</p>
         <div className="w-full mt-5 flex flex-col gap-4 items-center pl-[25px]">
           {navData.map((value, index) => (
             <div

@@ -99,7 +99,7 @@ export default function Login() {
                   });
 
                   setTimeout(() => {
-                    navigate("/home", {replace: true});
+                    navigate("/", {replace: true});
                   }, 2000);
                   setEmail("");
                   setPassword("");
@@ -228,7 +228,7 @@ export default function Login() {
               <p className=" mt-[35px] font-openSans font-normal text-[13.34px] text-[#03014C]">
                 Don’t have an account ?{" "}
                 <Link
-                  to="/"
+                  to="/registration"
                   className="font-openSans font-bold text-[13.34px] text-[#EA6C00]"
                 >
                   Sign up

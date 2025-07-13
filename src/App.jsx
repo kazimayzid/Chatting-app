@@ -11,14 +11,14 @@ import {
 } from "react-router";
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/registration",
     element: <Registration/>
   },
   {
     path: "/login",
     element: <Login/>
   },{
-    path:"/home",
+    path:"/",
     element: <Home/>
   },
   {

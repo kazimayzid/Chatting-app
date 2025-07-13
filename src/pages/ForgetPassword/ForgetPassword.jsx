@@ -71,7 +71,7 @@ export const ForgetPassword = () => {
           </div>
           <div className="py-5 flex justify-end pr-[20px]">
             <Link
-              to="/"
+              to="/registration"
               className="font-nunito font-semibold text-[16.64px] text-white py-[5px] px-[10px] bg-[#1E1E1E] rounded-[10px] cursor-pointer inline-block hover:bg-green-500 duration-500"
             >
               Sign UP
