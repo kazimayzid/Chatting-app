@@ -4,35 +4,54 @@ import Profile1 from "../../assets/Profile1.png";
 import Profile2 from "../../assets/profile2.png";
 import { CiSearch } from "react-icons/ci";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
-import { FaPlus } from "react-icons/fa";
-import { getDatabase, ref, onValue } from "firebase/database";
+import { FaMinus, FaPlus } from "react-icons/fa";
+import { getDatabase, ref, onValue, set, remove } from "firebase/database";
 import { useSelector } from "react-redux";
-
 export const Userlist = () => {
-  const data = useSelector(state => state.user.value)
+  const [requestList, setRequestList] = useState([]);
+  const data = useSelector((state) => state.user.value);
   console.log(data, "hwllo");
-  
+
   const db = getDatabase();
-  const [userlist, setUserList] = useState([])
+  const [userlist, setUserList] = useState([]);
   useEffect(() => {
     const starCountRef = ref(db, "users/");
     onValue(starCountRef, (snapshot) => {
       let userListAry = [];
       snapshot.forEach((items) => {
         if (data.uid !== items.key) {
-          
-          userListAry.push(items.val());
+          userListAry.push({ ...items.val(), userid: items.key });
         }
       });
       setUserList(userListAry);
-     
-     
     });
   }, []);
 
-  const handleRequest
+  const handleRequest = (items) => {
+    console.log(items, "three");
 
-  
+    set(ref(db, `friendRequest/${data.uid}_${items.userid}`), {
+      senderId: data.uid,
+      senderName: data.displayName,
+      receiverId: items.userid,
+      receiverName: items.username,
+    });
+  };
+  const handleRequestCancel = (user) => {
+    remove(ref(db, `friendRequest/${data.uid}_${user.userid}`));
+  };
+
+  useEffect(() => {
+    const reqRef = ref(db, "friendRequest/");
+    onValue(reqRef, (snapshot) => {
+      let arr = [];
+      snapshot.forEach((item) => {
+        arr.push(item.key);
+      });
+      setRequestList(arr);
+    });
+  }, []);
+
   return (
     <>
       <div className="h-[100%]">
@@ -61,20 +80,27 @@ export const Userlist = () => {
                   <div
                     key={index}
                     className="w-[70px] h-[70px] bg-center bg-cover rounded-full"
-                    style={{ backgroundImage: `url(${user.profile ? user.profile : Profile})`, }}
+                    style={{
+                      backgroundImage: `url(${
+                        user.profile ? user.profile : Profile
+                      })`,
+                    }}
                   ></div>
                   <div className="ml-[14px]">
                     <h1 className="font-poppins font-semibold text-lg text-black">
                       {user.username}
                     </h1>
                     <p className="font-poppins font-medium text-[14px] text-homePrimary">
-                      
                       {user.email}
                     </p>
                   </div>
                 </div>
                 <button className="text-black hover:text-white hover:bg-black px-[8px] py-[4px] rounded-[5px]">
-                  <FaPlus onClick={()=>handleRequest(items)}/>
+                  {requestList.includes(`${data.uid}_${user.userid}`) ? (
+                    <FaMinus onClick={() => handleRequestCancel(user)} />
+                  ) : (
+                    <FaPlus onClick={() => handleRequest(user)} />
+                  )}
                 </button>
               </div>
             ))}

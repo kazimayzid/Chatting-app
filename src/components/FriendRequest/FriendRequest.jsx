@@ -1,51 +1,74 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Profile from "../../assets/Mayzidpic.JPG";
 import Profile1 from "../../assets/Profile1.png";
 import Profile2 from "../../assets/profile2.png";
 import { CiSearch } from "react-icons/ci";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
-
+import { useSelector } from "react-redux";
+import { getDatabase, ref, onValue } from "firebase/database";
 export const FriendRequest = () => {
+  const userData = useSelector((state) => state.user.value);
+   const db = getDatabase();
+   const [requestList, setRequestList] = useState([]);
+  useEffect(() => {
+   
+    const starCountRef = ref(db, "friendRequest/");
+    onValue(starCountRef, (snapshot) => {
+      // const data = snapshot.val();
+      let requestArr = [];
+      snapshot.forEach((item)=>{
+        const request = item.val()
+        if (request.receiverId === userData.uid) {
+          requestArr.push(request)
+        }
+      });
+      setRequestList(requestArr);
+      console.log(requestArr, "six");
+      
+      
+    });
+  }, [userData.uid]);
+
   // logic for design Start================
   // maping for Friends----
-  const groupList = [
-    {
-      img: Profile1,
-      name: "Johan",
-      message: "how are you",
-      button: "Accept",
-    },
-    {
-      img: Profile2,
-      name: "Adam ambros",
-      message: "how are you",
-      button: "Accept",
-    },
-    {
-      img: Profile,
-      name: "kazi mayzid",
-      message: "how are you",
-      button: "Accept",
-    },
-    {
-      img: Profile,
-      name: "kazi mayzid",
-      message: "how are you",
-      button: "Accept",
-    },
-    {
-      img: Profile,
-      name: "kazi mayzid",
-      message: "how are you",
-      button: "Accept",
-    },
-    {
-      img: Profile,
-      name: "kazi mayzid",
-      message: "how are you",
-      button: "Accept",
-    },
-  ];
+  // const groupList = [
+  //   {
+  //     img: Profile1,
+  //     name: "Johan",
+  //     message: "how are you",
+  //     button: "Accept",
+  //   },
+  //   {
+  //     img: Profile2,
+  //     name: "Adam ambros",
+  //     message: "how are you",
+  //     button: "Accept",
+  //   },
+  //   {
+  //     img: Profile,
+  //     name: "kazi mayzid",
+  //     message: "how are you",
+  //     button: "Accept",
+  //   },
+  //   {
+  //     img: Profile,
+  //     name: "kazi mayzid",
+  //     message: "how are you",
+  //     button: "Accept",
+  //   },
+  //   {
+  //     img: Profile,
+  //     name: "kazi mayzid",
+  //     message: "how are you",
+  //     button: "Accept",
+  //   },
+  //   {
+  //     img: Profile,
+  //     name: "kazi mayzid",
+  //     message: "how are you",
+  //     button: "Accept",
+  //   },
+  // ];
   return (
     <>
       <div className="h-[100%]">
@@ -67,27 +90,27 @@ export const FriendRequest = () => {
           </div>
         </div>
         <div className=" mt-[15px] px-[22px] rounded-[20px] h-[85%]  overflow-y-auto">
-          <div >
-            {groupList.map((group, index) => (
+          <div>
+            {requestList.map((req, index) => (
               <div className="flex items-center justify-between pb-[13px] mb-[13px] border-b-[1px] border-[rgba(0,0,0,0.25)]">
                 <div className="flex items-center">
                   <div
                     key={index}
                     className="w-[70px] h-[70px] bg-center bg-cover rounded-full"
-                    style={{ backgroundImage: `url(${group.img})` }}
+                    style={{ backgroundImage: `url(${Profile})` }}
                   ></div>
                   <div className="ml-[14px]">
                     <h1 className="font-poppins font-semibold text-lg text-black">
-                      {group.name}
+                      {req.senderName}
                     </h1>
                     <p className="font-poppins font-medium text-[14px] text-homePrimary">
                       {" "}
-                      {group.message}
+                      {requestList.message}
                     </p>
                   </div>
                 </div>
                 <button className="text-black hover:text-white hover:bg-black px-[8px] py-[4px] rounded-[5px]">
-                  {group.button}
+                  Accept
                 </button>
               </div>
             ))}
