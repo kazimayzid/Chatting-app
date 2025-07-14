@@ -5,70 +5,37 @@ import Profile2 from "../../assets/profile2.png";
 import { CiSearch } from "react-icons/ci";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { useSelector } from "react-redux";
-import { getDatabase, ref, onValue } from "firebase/database";
+import { getDatabase, ref, onValue, remove } from "firebase/database";
+
 export const FriendRequest = () => {
   const userData = useSelector((state) => state.user.value);
-   const db = getDatabase();
-   const [requestList, setRequestList] = useState([]);
+  const db = getDatabase();
+  const [requestList, setRequestList] = useState([]);
   useEffect(() => {
-   
     const starCountRef = ref(db, "friendRequest/");
     onValue(starCountRef, (snapshot) => {
       // const data = snapshot.val();
       let requestArr = [];
-      snapshot.forEach((item)=>{
-        const request = item.val()
+      snapshot.forEach((item) => {
+        const request = item.val();
         if (request.receiverId === userData.uid) {
-          requestArr.push(request)
+          requestArr.push(request);
         }
       });
       setRequestList(requestArr);
-      console.log(requestArr, "six");
-      
-      
+      // console.log(requestArr, "six");
     });
   }, [userData.uid]);
 
-  // logic for design Start================
-  // maping for Friends----
-  // const groupList = [
-  //   {
-  //     img: Profile1,
-  //     name: "Johan",
-  //     message: "how are you",
-  //     button: "Accept",
-  //   },
-  //   {
-  //     img: Profile2,
-  //     name: "Adam ambros",
-  //     message: "how are you",
-  //     button: "Accept",
-  //   },
-  //   {
-  //     img: Profile,
-  //     name: "kazi mayzid",
-  //     message: "how are you",
-  //     button: "Accept",
-  //   },
-  //   {
-  //     img: Profile,
-  //     name: "kazi mayzid",
-  //     message: "how are you",
-  //     button: "Accept",
-  //   },
-  //   {
-  //     img: Profile,
-  //     name: "kazi mayzid",
-  //     message: "how are you",
-  //     button: "Accept",
-  //   },
-  //   {
-  //     img: Profile,
-  //     name: "kazi mayzid",
-  //     message: "how are you",
-  //     button: "Accept",
-  //   },
-  // ];
+  const cancelHandler = (item) => {
+    // console.log(item, "list of friend");
+    
+    const cancelData= (ref(db, `friendRequest/${item.senderId}_${item.receiverId}`));
+      remove(cancelData)
+    
+  };
+// console.log(requestList, "reqlit");
+
   return (
     <>
       <div className="h-[100%]">
@@ -92,10 +59,12 @@ export const FriendRequest = () => {
         <div className=" mt-[15px] px-[22px] rounded-[20px] h-[85%]  overflow-y-auto">
           <div>
             {requestList.map((req, index) => (
-              <div className="flex items-center justify-between pb-[13px] mb-[13px] border-b-[1px] border-[rgba(0,0,0,0.25)]">
+              <div
+                key={index}
+                className="flex items-center justify-between pb-[13px] mb-[13px] border-b-[1px] border-[rgba(0,0,0,0.25)]"
+              >
                 <div className="flex items-center">
                   <div
-                    key={index}
                     className="w-[70px] h-[70px] bg-center bg-cover rounded-full"
                     style={{ backgroundImage: `url(${Profile})` }}
                   ></div>
@@ -109,9 +78,17 @@ export const FriendRequest = () => {
                     </p>
                   </div>
                 </div>
-                <button className="text-black hover:text-white hover:bg-black px-[8px] py-[4px] rounded-[5px]">
-                  Accept
-                </button>
+                <div>
+                  <button
+                    onClick={() => cancelHandler(req)}
+                    className="text-black hover:text-white hover:bg-black px-[8px] py-[4px] rounded-[5px] duration-300 mr-0.5 border-[1px] border-black"
+                  >
+                    Cancel
+                  </button>
+                  <button className="text-black hover:text-white hover:bg-black px-[8px] py-[4px] rounded-[5px] duration-300 border-[1px] border-black">
+                    Accept
+                  </button>
+                </div>
               </div>
             ))}
           </div>
