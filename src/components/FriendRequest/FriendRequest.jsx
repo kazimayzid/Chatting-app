@@ -5,7 +5,14 @@ import Profile2 from "../../assets/profile2.png";
 import { CiSearch } from "react-icons/ci";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { useSelector } from "react-redux";
-import { getDatabase, ref, onValue, remove } from "firebase/database";
+import {
+  getDatabase,
+  ref,
+  onValue,
+  remove,
+  set,
+  push,
+} from "firebase/database";
 
 export const FriendRequest = () => {
   const userData = useSelector((state) => state.user.value);
@@ -23,19 +30,32 @@ export const FriendRequest = () => {
         }
       });
       setRequestList(requestArr);
-      // console.log(requestArr, "six");
     });
   }, [userData.uid]);
 
   const cancelHandler = (item) => {
-    // console.log(item, "list of friend");
-    
-    const cancelData= (ref(db, `friendRequest/${item.senderId}_${item.receiverId}`));
-      remove(cancelData)
-    
+    const cancelData = ref(
+      db,
+      `friendRequest/${item.senderId}_${item.receiverId}`
+    );
+    remove(cancelData);
   };
-// console.log(requestList, "reqlit");
+  // console.log(requestList, "reqlit");
 
+  const acceptHandle = (friend) => {
+    console.log(friend, "friend");
+    set(push(ref(db, `friends/`)), {
+      friendId: friend.senderId,
+      friendName: friend.senderName,
+      userId: friend.receiverId,
+      userName: friend.receiverName
+    });
+    const  addFriend= ref(
+      db,
+      `friendRequest/${friend.senderId}_${friend.receiverId}`
+    );
+    remove(addFriend);
+  };
   return (
     <>
       <div className="h-[100%]">
@@ -85,7 +105,10 @@ export const FriendRequest = () => {
                   >
                     Cancel
                   </button>
-                  <button className="text-black hover:text-white hover:bg-black px-[8px] py-[4px] rounded-[5px] duration-300 border-[1px] border-black">
+                  <button
+                    onClick={() => acceptHandle(req)}
+                    className="text-black hover:text-white hover:bg-black px-[8px] py-[4px] rounded-[5px] duration-300 border-[1px] border-black"
+                  >
                     Accept
                   </button>
                 </div>

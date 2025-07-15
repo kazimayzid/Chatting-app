@@ -17,6 +17,8 @@ export const Userlist = () => {
   useEffect(() => {
     const starCountRef = ref(db, "users/");
     onValue(starCountRef, (snapshot) => {
+      console.log(snapshot.val(), "bal");
+      
       let userListAry = [];
       snapshot.forEach((items) => {
         if (data.uid !== items.key) {
@@ -51,6 +53,10 @@ export const Userlist = () => {
       setRequestList(arr);
     });
   }, []);
+console.log(userlist, "userlist");
+
+  // friends data===================
+  
 
   return (
     <>

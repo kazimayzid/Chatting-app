@@ -1,51 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Profile from "../../assets/Mayzidpic.JPG";
 import Profile1 from "../../assets/Profile1.png";
 import Profile2 from "../../assets/profile2.png";
 import { CiSearch } from "react-icons/ci";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
+import { getDatabase, onValue, ref } from "firebase/database";
+import { useSelector } from "react-redux";
 
 const Friends = () => {
-  // logic for design Start================
-  // maping for Friends----
-  const groupList = [
-    {
-      img: Profile2,
-      name: "Adam ambros",
-      message: "how are you",
-      date: "Today, 8:56pm",
-    },
-    {
-      img: Profile,
-      name: "kazi mayzid",
-      message: "how are you",
-      date: "Today, 8:56pm",
-    },
-    {
-      img: Profile1,
-      name: "Johan",
-      message: "how are you",
-      date: "Yesterday, 8:56pm",
-    },
-    {
-      img: Profile,
-      name: "kazi mayzid",
-      message: "how are you",
-      date: "Today, 8:56pm",
-    },
-    {
-      img: Profile,
-      name: "kazi mayzid",
-      message: "how are you",
-      date: "Yesterday, 8:56pm",
-    },
-    {
-      img: Profile,
-      name: "kazi mayzid",
-      message: "how are you",
-      date: "Today, 8:56pm",
-    },
-  ];
+  const userData = useSelector((state) => state.user.value);
+  const [friendsData, setFriendsData] = useState([]);
+  const db = getDatabase();
+  useEffect(() => {
+    const starCountRef = ref(db, "friends/");
+    onValue(starCountRef, (snapshot) => {
+      // const data = snapshot.val();
+      let friendsArr = [];
+      snapshot.forEach((item) => {
+        const request = item.val();
+        if (request.userId === userData.uid) {
+          friendsArr.push(request);
+        }
+      });
+      setFriendsData(friendsArr);
+    });
+  }, [userData.uid]);
+  console.log(friendsData, "friends");
+
   return (
     <>
       <div className="h-[100%]">
@@ -68,26 +49,26 @@ const Friends = () => {
         </div>
         <div className=" mt-[15px] px-[22px] rounded-[20px] h-[85%]  overflow-y-auto shadow-2xl">
           <div>
-            {groupList.map((group, index) => (
+            {friendsData.map((friend, index) => (
               <div className="flex items-center justify-between pb-[13px] mb-[13px] border-b-[1px] border-[rgba(0,0,0,0.25)]">
                 <div className="flex items-center">
                   <div
                     key={index}
                     className="w-[70px] h-[70px] bg-center bg-cover rounded-full"
-                    style={{ backgroundImage: `url(${group.img})` }}
+                    style={{ backgroundImage: `url(${Profile})` }}
                   ></div>
                   <div className="ml-[14px]">
                     <h1 className="font-poppins font-semibold text-lg text-black">
-                      {group.name}
+                      {friend.friendName}
                     </h1>
                     <p className="font-poppins font-medium text-[14px] text-homePrimary">
                       {" "}
-                      {group.message}
+                      {friend.message}
                     </p>
                   </div>
                 </div>
                 <p className="font-poppins font-medium text-[10px] text-[rgba(0,0,0,0.5)]">
-                  {group.date}
+                  {friend.date}
                 </p>
               </div>
             ))}
