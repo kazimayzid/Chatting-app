@@ -36,27 +36,27 @@ export default function Home() {
         {/* Main Content */}
         <div className="w-[90%] flex flex-col h-full overflow-hidden">
           {/* Top Section */}
-          <div className="flex-1 flex gap-x-[22px] overflow-hidden m-[20px]">
-            <div className="w-[34%] h-full shadow-xl/30 overflow-visible">
+          <div className="flex-1 flex gap-x-[22px] h-[100%] overflow-hidden p-2">
+            <div className="w-[33%] h-[100%] shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[20px] overflow-hidden">
               <Grouplist />
             </div>
-            <div className="w-[33%] h-full ">
+            <div className="w-[33%] h-[100%] shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[20px] overflow-hidden">
               <Friends />
             </div>
-            <div className="w-[33%] h-full ">
+            <div className="w-[33%] h-[100%] shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[20px] overflow-hidden">
               <Userlist />
             </div>
           </div>
 
           {/* Bottom Section */}
-          <div className="flex-1 flex gap-x-[22px] overflow-hidden m-[20px]">
-            <div className="w-[34%] h-full ">
+          <div className="flex-1 flex gap-x-[22px] h-[100%] overflow-hidden p-2">
+            <div className="w-[34%] h-[100%] shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[20px] overflow-hidden">
               <FriendRequest />
             </div>
-            <div className="w-[33%] h-full ">
+            <div className="w-[33%] h-[100%] shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[20px] overflow-hidden">
               <MyGroups />
             </div>
-            <div className="w-[33%] h-full ">
+            <div className="w-[33%] h-[100%] shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[20px] overflow-hidden">
               <BlockedUsers />
             </div>
           </div>

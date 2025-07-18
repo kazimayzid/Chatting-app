@@ -18,7 +18,7 @@ export const Userlist = () => {
     const starCountRef = ref(db, "users/");
     onValue(starCountRef, (snapshot) => {
       console.log(snapshot.val(), "bal");
-      
+
       let userListAry = [];
       snapshot.forEach((items) => {
         if (data.uid !== items.key) {
@@ -53,65 +53,61 @@ export const Userlist = () => {
       setRequestList(arr);
     });
   }, []);
-console.log(userlist, "userlist");
+  console.log(userlist, "userlist");
 
   // friends data===================
-  
 
   return (
     <>
-      <div className="h-[100%]">
-        <div>
-          <div className="flex justify-between items-center px-4">
-            <p className="font-poppins font-semibold text-[20px] text-black">
-              User List
-            </p>
-            <PiDotsThreeVerticalBold className=" w-[19px] h-[19px] text-black text-[5px] font-bold " />
-          </div>
-          <div className="relative mx-5">
-            <input
-              type="search"
-              placeholder="Search"
-              className="w-full px-4 border focus:outline-none placeholder:font-poppins placeholder:font-medium placeholder:text-[16px] placeholder:text-[rgba(61,61,61,0.35)] py-[17px] pl-[75px] rounded-[20px] border-none shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
-            />
-            <CiSearch className="absolute top-[50%] translate-[-50%] left-[23px] w-[19px] h-[19px] text-black text-[5px] font-bold  " />
-            <PiDotsThreeVerticalBold className="absolute top-[50%] translate-[-50%] right-[23px] w-[19px] h-[19px] text-black text-[5px] font-bold " />
-          </div>
+      <div className="h-[20%]">
+        <div className="flex justify-between items-center px-4">
+          <p className="font-poppins font-semibold text-[20px] text-black">
+            User List
+          </p>
+          <PiDotsThreeVerticalBold className=" w-[19px] h-[19px] text-black text-[5px] font-bold " />
         </div>
-        <div className="shadow-2xl mt-[15px] px-[22px] rounded-[20px] h-[85%]  overflow-y-auto">
-          <div>
-            {userlist.map((user, index) => (
-              <div className="flex items-center justify-between pb-[13px] mb-[13px] border-b-[1px] border-[rgba(0,0,0,0.25)]">
-                <div className="flex items-center">
-                  <div
-                    key={index}
-                    className="w-[70px] h-[70px] bg-center bg-cover rounded-full"
-                    style={{
-                      backgroundImage: `url(${
-                        user.profile ? user.profile : Profile
-                      })`,
-                    }}
-                  ></div>
-                  <div className="ml-[14px]">
-                    <h1 className="font-poppins font-semibold text-lg text-black">
-                      {user.username}
-                    </h1>
-                    <p className="font-poppins font-medium text-[14px] text-homePrimary">
-                      {user.email}
-                    </p>
-                  </div>
-                </div>
-                <button className="text-black hover:text-white hover:bg-black px-[8px] py-[4px] rounded-[5px]">
-                  {requestList.includes(`${data.uid}_${user.userid}`) ? (
-                    <FaMinus onClick={() => handleRequestCancel(user)} />
-                  ) : (
-                    <FaPlus onClick={() => handleRequest(user)} />
-                  )}
-                </button>
+        <div className="relative mx-5">
+          <input
+            type="search"
+            placeholder="Search"
+            className="w-full px-4 border focus:outline-none placeholder:font-poppins placeholder:font-medium placeholder:text-[16px] placeholder:text-[rgba(61,61,61,0.35)] py-[17px] pl-[75px] rounded-[20px] border-none shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
+          />
+          <CiSearch className="absolute top-[50%] translate-[-50%] left-[23px] w-[19px] h-[19px] text-black text-[5px] font-bold  " />
+          <PiDotsThreeVerticalBold className="absolute top-[50%] translate-[-50%] right-[23px] w-[19px] h-[19px] text-black text-[5px] font-bold " />
+        </div>
+      </div>
+
+      <div className=" mt-[15px] px-[22px] rounded-[20px] h-[85%] overflow-y-auto">
+        {userlist.map((user, index) => (
+          <div className="flex items-center justify-between pb-[13px] mb-[13px] border-b-[1px] border-[rgba(0,0,0,0.25)]">
+            <div className="flex items-center">
+              <div
+                key={index}
+                className="w-[70px] h-[70px] bg-center bg-cover rounded-full"
+                style={{
+                  backgroundImage: `url(${
+                    user.profile ? user.profile : Profile
+                  })`,
+                }}
+              ></div>
+              <div className="ml-[14px]">
+                <h1 className="font-poppins font-semibold text-lg text-black">
+                  {user.username}
+                </h1>
+                <p className="font-poppins font-medium text-[14px] text-homePrimary">
+                  {user.email}
+                </p>
               </div>
-            ))}
+            </div>
+            <button className="text-black hover:text-white hover:bg-black px-[8px] py-[4px] rounded-[5px]">
+              {requestList.includes(`${data.uid}_${user.userid}`) ? (
+                <FaMinus onClick={() => handleRequestCancel(user)} />
+              ) : (
+                <FaPlus onClick={() => handleRequest(user)} />
+              )}
+            </button>
           </div>
-        </div>
+        ))}
       </div>
     </>
   );

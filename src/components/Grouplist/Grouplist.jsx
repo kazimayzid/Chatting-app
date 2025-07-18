@@ -50,8 +50,7 @@ export const Grouplist = () => {
   // Logic for design End==============================
   return (
     <>
-      <div className="h-[100%]">
-        <div className="">
+        <div className="h-[20%]">
           <div className="flex justify-between items-center px-4">
             <p className="font-poppins font-semibold text-[20px] text-black">
               Groups List
@@ -70,8 +69,7 @@ export const Grouplist = () => {
           </div>
         </div>
 
-        <div className=" mt-[15px]  px-[22px] rounded-[20px] overflow-y-auto h-[85%]  shadow-2xl">
-          <div className="">
+          <div className=" mt-[15px] px-[22px] rounded-[20px] h-[85%] overflow-y-auto">
             {groupList.map((group, index) => (
               <div className="flex items-center justify-between pb-[13px] mb-[13px] border-b-[1px] border-[rgba(0,0,0,0.25)]">
                 <div className="flex items-center">
@@ -96,8 +94,6 @@ export const Grouplist = () => {
               </div>
             ))}
           </div>
-        </div>
-      </div>
     </>
   );
 };

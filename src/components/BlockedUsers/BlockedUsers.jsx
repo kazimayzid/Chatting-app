@@ -47,15 +47,15 @@ export const BlockedUsers = () => {
   ];
   return (
     <>
-      <div className="h-[100%]">
-        <div>
+      
+        <div className="h-[20%]">
           <div className="flex justify-between items-center px-4">
             <p className="font-poppins font-semibold text-[20px] text-black">
               Block Users
             </p>
             <PiDotsThreeVerticalBold className=" w-[19px] h-[19px] text-black text-[5px] font-bold " />
           </div>
-          <div className="relative mx-5">
+          <div className="relative mx-5 ">
             <input
               type="search"
               placeholder="Search"
@@ -65,10 +65,10 @@ export const BlockedUsers = () => {
             <PiDotsThreeVerticalBold className="absolute top-[50%] translate-[-50%] right-[23px] w-[19px] h-[19px] text-black text-[5px] font-bold " />
           </div>
         </div>
-        <div className=" mt-[15px] px-[22px] rounded-[20px] h-[85%]  overflow-y-auto">
-          <div>
+        <div className=" mt-[15px] px-[22px] rounded-[20px] h-[85%] overflow-y-auto">
+         
             {groupList.map((group, index) => (
-              <div className="flex items-center justify-between pb-[13px] mb-[13px] border-b-[1px] border-[rgba(0,0,0,0.25)]">
+              <div className=" flex items-center justify-between pb-[13px] mb-[13px] border-b-[1px] border-[rgba(0,0,0,0.25)]">
                 <div className="flex items-center">
                   <div
                     key={index}
@@ -90,9 +90,9 @@ export const BlockedUsers = () => {
                 </button>
               </div>
             ))}
-          </div>
+          
         </div>
-      </div>
+      
     </>
   );
 };

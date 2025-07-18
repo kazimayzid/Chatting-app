@@ -48,9 +48,9 @@ export const FriendRequest = () => {
       friendId: friend.senderId,
       friendName: friend.senderName,
       userId: friend.receiverId,
-      userName: friend.receiverName
+      userName: friend.receiverName,
     });
-    const  addFriend= ref(
+    const addFriend = ref(
       db,
       `friendRequest/${friend.senderId}_${friend.receiverId}`
     );
@@ -58,64 +58,61 @@ export const FriendRequest = () => {
   };
   return (
     <>
-      <div className="h-[100%]">
-        <div>
-          <div className="flex justify-between items-center px-4">
-            <p className="font-poppins font-semibold text-[20px] text-black">
-              Friend Request
-            </p>
-            <PiDotsThreeVerticalBold className=" w-[19px] h-[19px] text-black text-[5px] font-bold " />
-          </div>
-          <div className="relative mx-5">
-            <input
-              type="search"
-              placeholder="Search"
-              className="w-full px-4 border focus:outline-none placeholder:font-poppins placeholder:font-medium placeholder:text-[16px] placeholder:text-[rgba(61,61,61,0.35)] py-[17px] pl-[75px] rounded-[20px] border-none shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
-            />
-            <CiSearch className="absolute top-[50%] translate-[-50%] left-[23px] w-[19px] h-[19px] text-black text-[5px] font-bold  " />
-            <PiDotsThreeVerticalBold className="absolute top-[50%] translate-[-50%] right-[23px] w-[19px] h-[19px] text-black text-[5px] font-bold " />
-          </div>
+      <div className="h-[20%]">
+        <div className="flex justify-between items-center px-4">
+          <p className="font-poppins font-semibold text-[20px] text-black">
+            Friend Request
+          </p>
+          <PiDotsThreeVerticalBold className=" w-[19px] h-[19px] text-black text-[5px] font-bold " />
         </div>
-        <div className=" mt-[15px] px-[22px] rounded-[20px] h-[85%]  overflow-y-auto">
-          <div>
-            {requestList.map((req, index) => (
+        <div className="relative mx-5">
+          <input
+            type="search"
+            placeholder="Search"
+            className="w-full px-4 border focus:outline-none placeholder:font-poppins placeholder:font-medium placeholder:text-[16px] placeholder:text-[rgba(61,61,61,0.35)] py-[17px] pl-[75px] rounded-[20px] border-none shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
+          />
+          <CiSearch className="absolute top-[50%] translate-[-50%] left-[23px] w-[19px] h-[19px] text-black text-[5px] font-bold  " />
+          <PiDotsThreeVerticalBold className="absolute top-[50%] translate-[-50%] right-[23px] w-[19px] h-[19px] text-black text-[5px] font-bold " />
+        </div>
+      </div>
+
+      <div className=" mt-[15px] px-[22px] rounded-[20px] h-[85%] overflow-y-auto">
+        {requestList.map((req, index) => (
+          <div
+            key={index}
+            className="flex items-center justify-between pb-[13px] mb-[13px] border-b-[1px] border-[rgba(0,0,0,0.25)]"
+          >
+            <div className="flex items-center">
               <div
-                key={index}
-                className="flex items-center justify-between pb-[13px] mb-[13px] border-b-[1px] border-[rgba(0,0,0,0.25)]"
-              >
-                <div className="flex items-center">
-                  <div
-                    className="w-[70px] h-[70px] bg-center bg-cover rounded-full"
-                    style={{ backgroundImage: `url(${Profile})` }}
-                  ></div>
-                  <div className="ml-[14px]">
-                    <h1 className="font-poppins font-semibold text-lg text-black">
-                      {req.senderName}
-                    </h1>
-                    <p className="font-poppins font-medium text-[14px] text-homePrimary">
-                      {" "}
-                      {requestList.message}
-                    </p>
-                  </div>
-                </div>
-                <div>
-                  <button
-                    onClick={() => cancelHandler(req)}
-                    className="text-black hover:text-white hover:bg-black px-[8px] py-[4px] rounded-[5px] duration-300 mr-0.5 border-[1px] border-black"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={() => acceptHandle(req)}
-                    className="text-black hover:text-white hover:bg-black px-[8px] py-[4px] rounded-[5px] duration-300 border-[1px] border-black"
-                  >
-                    Accept
-                  </button>
-                </div>
+                className="w-[70px] h-[70px] bg-center bg-cover rounded-full"
+                style={{ backgroundImage: `url(${Profile})` }}
+              ></div>
+              <div className="ml-[14px]">
+                <h1 className="font-poppins font-semibold text-lg text-black">
+                  {req.senderName}
+                </h1>
+                <p className="font-poppins font-medium text-[14px] text-homePrimary">
+                  {" "}
+                  {requestList.message}
+                </p>
               </div>
-            ))}
+            </div>
+            <div>
+              <button
+                onClick={() => cancelHandler(req)}
+                className="text-black hover:text-white hover:bg-black px-[8px] py-[4px] rounded-[5px] duration-300 mr-0.5 border-[1px] border-black"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => acceptHandle(req)}
+                className="text-black hover:text-white hover:bg-black px-[8px] py-[4px] rounded-[5px] duration-300 border-[1px] border-black"
+              >
+                Accept
+              </button>
+            </div>
           </div>
-        </div>
+        ))}
       </div>
     </>
   );
