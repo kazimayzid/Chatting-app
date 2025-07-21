@@ -10,13 +10,12 @@ import { useSelector } from "react-redux";
 export const Userlist = () => {
   const [requestList, setRequestList] = useState([]);
   const data = useSelector((state) => state.user.value);
-  const [friendList, setFriendList] = useState([])
+  const [friendList, setFriendList] = useState([]);
   const db = getDatabase();
   const [userlist, setUserList] = useState([]);
   useEffect(() => {
     const starCountRef = ref(db, "users/");
     onValue(starCountRef, (snapshot) => {
-
       let userListAry = [];
       snapshot.forEach((items) => {
         if (data.uid !== items.key) {
@@ -28,7 +27,6 @@ export const Userlist = () => {
   }, []);
 
   const handleRequest = (items) => {
-
     set(ref(db, `friendRequest/${data.uid}_${items.userid}`), {
       senderId: data.uid,
       senderName: data.displayName,
@@ -51,24 +49,21 @@ export const Userlist = () => {
     });
   }, []);
 
-
   useEffect(() => {
     const starCountRef = ref(db, "friends/");
     onValue(starCountRef, (snapshot) => {
-
       let friendListAry = [];
       snapshot.forEach((items) => {
-
-        
-        if (data.uid === items.val().userId) {
-          friendListAry.push( items.val().friendId );
+        const val = items.val();
+        if (data.uid === val.senderId || data.uid === val.receiverId) {
+          const friendId =
+            val.senderId === data.uid ? val.receiverId : val.senderId;
+          friendListAry.push(friendId);
         }
       });
       setFriendList(friendListAry);
     });
   }, []);
-  
-
 
   // friends data===================
 
@@ -93,36 +88,38 @@ export const Userlist = () => {
       </div>
 
       <div className=" mt-[15px] px-[22px] rounded-[20px] h-[85%] overflow-y-auto">
-        {userlist.filter(users => !friendList.includes(users.userid)) .map((user, index) => (
-          <div className="flex items-center justify-between pb-[13px] mb-[13px] border-b-[1px] border-[rgba(0,0,0,0.25)]">
-            <div className="flex items-center">
-              <div
-                key={index}
-                className="w-[70px] h-[70px] bg-center bg-cover rounded-full"
-                style={{
-                  backgroundImage: `url(${
-                    user.profile ? user.profile : Profile
-                  })`,
-                }}
-              ></div>
-              <div className="ml-[14px]">
-                <h1 className="font-poppins font-semibold text-lg text-black">
-                  {user.username}
-                </h1>
-                <p className="font-poppins font-medium text-[14px] text-homePrimary">
-                  {user.email}
-                </p>
+        {userlist
+          .filter((users) => !friendList.includes(users.userid))
+          .map((user, index) => (
+            <div className="flex items-center justify-between pb-[13px] mb-[13px] border-b-[1px] border-[rgba(0,0,0,0.25)]">
+              <div className="flex items-center">
+                <div
+                  key={index}
+                  className="w-[70px] h-[70px] bg-center bg-cover rounded-full"
+                  style={{
+                    backgroundImage: `url(${
+                      user.profile ? user.profile : Profile
+                    })`,
+                  }}
+                ></div>
+                <div className="ml-[14px]">
+                  <h1 className="font-poppins font-semibold text-lg text-black">
+                    {user.username}
+                  </h1>
+                  <p className="font-poppins font-medium text-[14px] text-homePrimary">
+                    {user.email}
+                  </p>
+                </div>
               </div>
+              <button className="text-black hover:text-white hover:bg-black px-[8px] py-[4px] rounded-[5px]">
+                {requestList.includes(`${data.uid}_${user.userid}`) ? (
+                  <FaMinus onClick={() => handleRequestCancel(user)} />
+                ) : (
+                  <FaPlus onClick={() => handleRequest(user)} />
+                )}
+              </button>
             </div>
-            <button className="text-black hover:text-white hover:bg-black px-[8px] py-[4px] rounded-[5px]">
-              {requestList.includes(`${data.uid}_${user.userid}`) ? (
-                <FaMinus onClick={() => handleRequestCancel(user)} />
-              ) : (
-                <FaPlus onClick={() => handleRequest(user)} />
-              )}
-            </button>
-          </div>
-        ))}
+          ))}
       </div>
     </>
   );

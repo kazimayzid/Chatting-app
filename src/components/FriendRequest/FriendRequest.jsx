@@ -45,10 +45,10 @@ export const FriendRequest = () => {
   const acceptHandle = (friend) => {
     console.log(friend, "friend");
     set(push(ref(db, `friends/`)), {
-      friendId: friend.senderId,
-      friendName: friend.senderName,
-      userId: friend.receiverId,
-      userName: friend.receiverName,
+      senderId: friend.senderId,
+      senderName: friend.senderName,
+      receiverId: friend.receiverId,
+      receiverName: friend.receiverName,
     });
     const addFriend = ref(
       db,
