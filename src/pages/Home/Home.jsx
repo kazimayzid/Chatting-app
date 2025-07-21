@@ -37,7 +37,7 @@ export default function Home() {
         <div className="w-[90%] flex flex-col h-full overflow-hidden">
           {/* Top Section */}
           <div className="flex-1 flex gap-x-[22px] h-[100%] overflow-hidden p-2">
-            <div className="w-[33%] h-[100%] shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[20px] overflow-hidden">
+            <div className="w-[34%] h-[100%] shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[20px] overflow-hidden">
               <Grouplist />
             </div>
             <div className="w-[33%] h-[100%] shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[20px] overflow-hidden">

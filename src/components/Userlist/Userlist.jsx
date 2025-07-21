@@ -10,14 +10,12 @@ import { useSelector } from "react-redux";
 export const Userlist = () => {
   const [requestList, setRequestList] = useState([]);
   const data = useSelector((state) => state.user.value);
-  console.log(data, "hwllo");
-
+  const [friendList, setFriendList] = useState([])
   const db = getDatabase();
   const [userlist, setUserList] = useState([]);
   useEffect(() => {
     const starCountRef = ref(db, "users/");
     onValue(starCountRef, (snapshot) => {
-      console.log(snapshot.val(), "bal");
 
       let userListAry = [];
       snapshot.forEach((items) => {
@@ -30,7 +28,6 @@ export const Userlist = () => {
   }, []);
 
   const handleRequest = (items) => {
-    console.log(items, "three");
 
     set(ref(db, `friendRequest/${data.uid}_${items.userid}`), {
       senderId: data.uid,
@@ -53,7 +50,25 @@ export const Userlist = () => {
       setRequestList(arr);
     });
   }, []);
-  console.log(userlist, "userlist");
+
+
+  useEffect(() => {
+    const starCountRef = ref(db, "friends/");
+    onValue(starCountRef, (snapshot) => {
+
+      let friendListAry = [];
+      snapshot.forEach((items) => {
+
+        
+        if (data.uid === items.val().userId) {
+          friendListAry.push( items.val().friendId );
+        }
+      });
+      setFriendList(friendListAry);
+    });
+  }, []);
+  
+
 
   // friends data===================
 
@@ -78,7 +93,7 @@ export const Userlist = () => {
       </div>
 
       <div className=" mt-[15px] px-[22px] rounded-[20px] h-[85%] overflow-y-auto">
-        {userlist.map((user, index) => (
+        {userlist.filter(users => !friendList.includes(users.userid)) .map((user, index) => (
           <div className="flex items-center justify-between pb-[13px] mb-[13px] border-b-[1px] border-[rgba(0,0,0,0.25)]">
             <div className="flex items-center">
               <div
