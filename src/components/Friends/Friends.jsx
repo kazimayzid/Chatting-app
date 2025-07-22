@@ -8,10 +8,10 @@ import { getDatabase, onValue, ref } from "firebase/database";
 import { useSelector } from "react-redux";
 import { SlOptions } from "react-icons/sl";
 
-
 const Friends = () => {
   const userData = useSelector((state) => state.user.value);
   const [friendsData, setFriendsData] = useState([]);
+  const [option, setOption] = useState(false);
   const db = getDatabase();
   useEffect(() => {
     const starCountRef = ref(db, "friends/");
@@ -20,14 +20,22 @@ const Friends = () => {
       let friendsArr = [];
       snapshot.forEach((item) => {
         const request = item.val();
-        if (userData.uid === request.senderId || userData.uid === request.receiverId) {
+        if (
+          userData.uid === request.senderId ||
+          userData.uid === request.receiverId
+        ) {
           friendsArr.push(request);
         }
       });
       setFriendsData(friendsArr);
     });
   }, [userData.uid]);
-  console.log(friendsData, "friends");
+  const optionHandle = () => {
+    setOption(true);
+  };
+  const optionCancel = () =>{
+    setOption(false)
+  }
 
   return (
     <>
@@ -70,9 +78,19 @@ const Friends = () => {
                 </p>
               </div>
             </div>
-            <p className="font-poppins font-medium text-[10px] text-[rgba(0,0,0,0.5)]">
-              <SlOptions size={20}/>
-            </p>
+            <div className="relative">
+              <p onClick={optionHandle} className="cursor-pointer">
+                <SlOptions className="hover:scale-110" size={20} />
+              </p>
+              {
+                option ? (<div 
+                onClick={optionCancel}
+                className=" absolute top-[-5px] gap-2 right-[30px] flex">
+                <button className="font-poppins border-black border-[1px] px-3 py-1 rounded-[6px] hover:bg-black hover:text-white duration-300">Unfriend</button>
+                <button className="font-poppins border-black border-[1px] px-3 py-1 rounded-[6px] hover:bg-black hover:text-white duration-300">Block</button>
+              </div>) : (<div>block</div>)
+              }
+            </div>
           </div>
         ))}
       </div>
