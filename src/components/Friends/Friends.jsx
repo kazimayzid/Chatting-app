@@ -4,7 +4,14 @@ import Profile1 from "../../assets/Profile1.png";
 import Profile2 from "../../assets/profile2.png";
 import { CiSearch } from "react-icons/ci";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
-import { getDatabase, onValue, push, ref, set } from "firebase/database";
+import {
+  getDatabase,
+  onValue,
+  push,
+  ref,
+  remove,
+  set,
+} from "firebase/database";
 import { useSelector } from "react-redux";
 import { SlOptions } from "react-icons/sl";
 
@@ -24,7 +31,7 @@ const Friends = () => {
           userData.uid === request.senderId ||
           userData.uid === request.receiverId
         ) {
-          friendsArr.push(request);
+          friendsArr.push({...request, key: item.key});
         }
       });
       setFriendsData(friendsArr);
@@ -32,12 +39,12 @@ const Friends = () => {
   }, [userData.uid]);
 
   const optionHandle = (index) => {
-    setOpenOptionIdx((prevIndex) => prevIndex === index? null : index);
+    setOpenOptionIdx((prevIndex) => (prevIndex === index ? null : index));
   };
-  
+
   const blockHandle = (user) => {
     // console.log(user, "ok");
-    set(push(ref(db, 'block/')),{
+    set(push(ref(db, "block/")), {
       senderId: user.senderId,
       senderName: user.senderName,
       senderEmail: user.senderEmail,
@@ -45,6 +52,12 @@ const Friends = () => {
       receiverName: user.receiverName,
       receiverEmail: user.receiverEmail,
     });
+    console.log(user);
+    
+   remove(ref(db, `friends/${user.key}`));
+  };
+  const unfriendHandel = (user) =>{
+     remove(ref(db, `friends/${user.key}`))
   }
 
   return (
@@ -84,11 +97,9 @@ const Friends = () => {
                 </h1>
                 <p className="font-poppins font-medium text-[14px] text-homePrimary">
                   {" "}
-                  {
-                    userData.uid === friend.senderId
+                  {userData.uid === friend.senderId
                     ? friend.receiverEmail
-                    : friend.senderEmail
-                  }
+                    : friend.senderEmail}
                 </p>
               </div>
             </div>
@@ -96,13 +107,21 @@ const Friends = () => {
               <p onClick={() => optionHandle(index)} className="cursor-pointer">
                 <SlOptions className="hover:scale-110" size={20} />
               </p>
-              {
-                openOptionIdx === index && (<div 
-                className=" absolute top-[-5px] gap-2 right-[30px] flex">
-                <button className="font-poppins border-black border-[1px] px-3 py-1 rounded-[6px] hover:bg-black hover:text-white duration-300">Unfriend</button>
-                <button onClick={() => blockHandle(friend)} className="font-poppins border-black border-[1px] px-3 py-1 rounded-[6px] hover:bg-black hover:text-white duration-300">Block</button>
-              </div>)
-              }
+              {openOptionIdx === index && (
+                <div className=" absolute top-[-5px] gap-2 right-[30px] flex">
+                  <button
+                  onClick={() => unfriendHandel(friend)}
+                  className="font-poppins border-black border-[1px] px-3 py-1 rounded-[6px] hover:bg-black hover:text-white duration-300">
+                    Unfriend
+                  </button>
+                  <button
+                    onClick={() => blockHandle(friend)}
+                    className="font-poppins border-red-500 border-[1px] px-3 py-1 rounded-[6px] hover:bg-red-500 hover:text-white duration-300"
+                  >
+                    Block
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         ))}

@@ -25,48 +25,9 @@ export const BlockedUsers = () => {
       setBlockList(blockArr, "blocklist");
       
     })
-   })
+   }, [])
 
-  // logic for design Start================
-  // maping for Friends----
-  // const groupList = [
-  //   {
-  //     img: Profile,
-  //     name: "kazi mayzid",
-  //     message: "how are you",
-  //     button: "Block",
-  //   },
-  //   {
-  //     img: Profile2,
-  //     name: "Adam ambros",
-  //     message: "how are you",
-  //     button: "Block",
-  //   },
-  //   {
-  //     img: Profile1,
-  //     name: "Johan",
-  //     message: "how are you",
-  //     button: "Block",
-  //   },
-  //   {
-  //     img: Profile,
-  //     name: "kazi mayzid",
-  //     message: "how are you",
-  //     button: "Block",
-  //   },
-  //   {
-  //     img: Profile1,
-  //     name: "Johan",
-  //     message: "how are you",
-  //     button: "Block",
-  //   },
-  //   {
-  //     img: Profile,
-  //     name: "kazi mayzid",
-  //     message: "how are you",
-  //     button: "Block",
-  //   },
-  // ];
+  
   return (
     <>
       
@@ -107,8 +68,8 @@ export const BlockedUsers = () => {
                     </p>
                   </div>
                 </div>
-                <button className="text-black hover:text-white hover:bg-black px-[8px] py-[4px] rounded-[5px]">
-                  {block.button}
+                <button className="font-poppins font-medium text-black hover:text-white hover:bg-green-700 border-2 border-green-700 duration-300 px-[8px] py-[4px] rounded-[5px]">
+                  Unblock
                 </button>
               </div>
             ))}
