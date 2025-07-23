@@ -43,12 +43,13 @@ export const FriendRequest = () => {
   // console.log(requestList, "reqlit");
 
   const acceptHandle = (friend) => {
-    console.log(friend, "friend");
     set(push(ref(db, `friends/`)), {
       senderId: friend.senderId,
       senderName: friend.senderName,
+      senderEmail: friend.senderEmail,
       receiverId: friend.receiverId,
       receiverName: friend.receiverName,
+      receiverEmail: friend.receiverEmail
     });
     const addFriend = ref(
       db,

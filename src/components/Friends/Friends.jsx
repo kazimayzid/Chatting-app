@@ -40,8 +40,10 @@ const Friends = () => {
     set(push(ref(db, 'block/')),{
       senderId: user.senderId,
       senderName: user.senderName,
+      senderEmail: user.senderEmail,
       receiverId: user.receiverId,
       receiverName: user.receiverName,
+      receiverEmail: user.receiverEmail,
     });
   }
 
@@ -82,7 +84,11 @@ const Friends = () => {
                 </h1>
                 <p className="font-poppins font-medium text-[14px] text-homePrimary">
                   {" "}
-                  {friend.message}
+                  {
+                    userData.uid === friend.senderId
+                    ? friend.receiverEmail
+                    : friend.senderEmail
+                  }
                 </p>
               </div>
             </div>

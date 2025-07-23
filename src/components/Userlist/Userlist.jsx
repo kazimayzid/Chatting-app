@@ -30,8 +30,10 @@ export const Userlist = () => {
     set(ref(db, `friendRequest/${data.uid}_${items.userid}`), {
       senderId: data.uid,
       senderName: data.displayName,
+      senderEmail: data.email,
       receiverId: items.userid,
       receiverName: items.username,
+      receiverEmail: items.email,
     });
   };
   const handleRequestCancel = (user) => {

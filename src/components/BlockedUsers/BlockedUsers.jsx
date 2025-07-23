@@ -1,50 +1,72 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Profile from "../../assets/Mayzidpic.JPG";
 import Profile1 from "../../assets/Profile1.png";
 import Profile2 from "../../assets/profile2.png";
 import { CiSearch } from "react-icons/ci";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
+import { useSelector } from "react-redux";
+import { getDatabase, onValue, ref } from "firebase/database";
 export const BlockedUsers = () => {
+   const userData = useSelector((state) => state.user.value);
+   const [blockList, setBlockList] = useState([])
+   const db = getDatabase()
+
+   useEffect(()=> {
+    const blockListRef = ref(db, "block/");
+    onValue(blockListRef, (snapshot) => {
+      let blockArr = []
+      snapshot.forEach((item) => {
+        const block = item.val();
+        if (userData.uid === block.senderId || userData.uid === block.receiverId) {
+          blockArr.push(block)
+        }
+        
+      })
+      setBlockList(blockArr, "blocklist");
+      
+    })
+   })
+
   // logic for design Start================
   // maping for Friends----
-  const groupList = [
-    {
-      img: Profile,
-      name: "kazi mayzid",
-      message: "how are you",
-      button: "Block",
-    },
-    {
-      img: Profile2,
-      name: "Adam ambros",
-      message: "how are you",
-      button: "Block",
-    },
-    {
-      img: Profile1,
-      name: "Johan",
-      message: "how are you",
-      button: "Block",
-    },
-    {
-      img: Profile,
-      name: "kazi mayzid",
-      message: "how are you",
-      button: "Block",
-    },
-    {
-      img: Profile1,
-      name: "Johan",
-      message: "how are you",
-      button: "Block",
-    },
-    {
-      img: Profile,
-      name: "kazi mayzid",
-      message: "how are you",
-      button: "Block",
-    },
-  ];
+  // const groupList = [
+  //   {
+  //     img: Profile,
+  //     name: "kazi mayzid",
+  //     message: "how are you",
+  //     button: "Block",
+  //   },
+  //   {
+  //     img: Profile2,
+  //     name: "Adam ambros",
+  //     message: "how are you",
+  //     button: "Block",
+  //   },
+  //   {
+  //     img: Profile1,
+  //     name: "Johan",
+  //     message: "how are you",
+  //     button: "Block",
+  //   },
+  //   {
+  //     img: Profile,
+  //     name: "kazi mayzid",
+  //     message: "how are you",
+  //     button: "Block",
+  //   },
+  //   {
+  //     img: Profile1,
+  //     name: "Johan",
+  //     message: "how are you",
+  //     button: "Block",
+  //   },
+  //   {
+  //     img: Profile,
+  //     name: "kazi mayzid",
+  //     message: "how are you",
+  //     button: "Block",
+  //   },
+  // ];
   return (
     <>
       
@@ -67,26 +89,26 @@ export const BlockedUsers = () => {
         </div>
         <div className=" mt-[15px] px-[22px] rounded-[20px] h-[85%] overflow-y-auto">
          
-            {groupList.map((group, index) => (
+            {blockList.map((block, index) => (
               <div className=" flex items-center justify-between pb-[13px] mb-[13px] border-b-[1px] border-[rgba(0,0,0,0.25)]">
                 <div className="flex items-center">
                   <div
                     key={index}
                     className="w-[70px] h-[70px] bg-center bg-cover rounded-full"
-                    style={{ backgroundImage: `url(${group.img})` }}
+                    style={{ backgroundImage: `url(${Profile})` }}
                   ></div>
                   <div className="ml-[14px]">
                     <h1 className="font-poppins font-semibold text-lg text-black">
-                      {group.name}
+                      {userData.uid === block.senderId? block.receiverName : block.senderName}
                     </h1>
                     <p className="font-poppins font-medium text-[14px] text-homePrimary">
                       {" "}
-                      {group.message}
+                      {userData.uid === block.senderId? block.receiverEmail : block.senderEmail}
                     </p>
                   </div>
                 </div>
                 <button className="text-black hover:text-white hover:bg-black px-[8px] py-[4px] rounded-[5px]">
-                  {group.button}
+                  {block.button}
                 </button>
               </div>
             ))}
