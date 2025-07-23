@@ -4,14 +4,14 @@ import Profile1 from "../../assets/Profile1.png";
 import Profile2 from "../../assets/profile2.png";
 import { CiSearch } from "react-icons/ci";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
-import { getDatabase, onValue, ref } from "firebase/database";
+import { getDatabase, onValue, push, ref, set } from "firebase/database";
 import { useSelector } from "react-redux";
 import { SlOptions } from "react-icons/sl";
 
 const Friends = () => {
   const userData = useSelector((state) => state.user.value);
   const [friendsData, setFriendsData] = useState([]);
-  const [option, setOption] = useState(false);
+  const [openOptionIdx, setOpenOptionIdx] = useState(null);
   const db = getDatabase();
   useEffect(() => {
     const starCountRef = ref(db, "friends/");
@@ -30,11 +30,19 @@ const Friends = () => {
       setFriendsData(friendsArr);
     });
   }, [userData.uid]);
-  const optionHandle = () => {
-    setOption(true);
+
+  const optionHandle = (index) => {
+    setOpenOptionIdx((prevIndex) => prevIndex === index? null : index);
   };
-  const optionCancel = () =>{
-    setOption(false)
+  
+  const blockHandle = (user) => {
+    // console.log(user, "ok");
+    set(push(ref(db, 'block/')),{
+      senderId: user.senderId,
+      senderName: user.senderName,
+      receiverId: user.receiverId,
+      receiverName: user.receiverName,
+    });
   }
 
   return (
@@ -79,16 +87,15 @@ const Friends = () => {
               </div>
             </div>
             <div className="relative">
-              <p onClick={optionHandle} className="cursor-pointer">
+              <p onClick={() => optionHandle(index)} className="cursor-pointer">
                 <SlOptions className="hover:scale-110" size={20} />
               </p>
               {
-                option ? (<div 
-                onClick={optionCancel}
+                openOptionIdx === index && (<div 
                 className=" absolute top-[-5px] gap-2 right-[30px] flex">
                 <button className="font-poppins border-black border-[1px] px-3 py-1 rounded-[6px] hover:bg-black hover:text-white duration-300">Unfriend</button>
-                <button className="font-poppins border-black border-[1px] px-3 py-1 rounded-[6px] hover:bg-black hover:text-white duration-300">Block</button>
-              </div>) : (<div>block</div>)
+                <button onClick={() => blockHandle(friend)} className="font-poppins border-black border-[1px] px-3 py-1 rounded-[6px] hover:bg-black hover:text-white duration-300">Block</button>
+              </div>)
               }
             </div>
           </div>
