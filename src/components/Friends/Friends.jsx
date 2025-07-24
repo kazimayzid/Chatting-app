@@ -43,14 +43,20 @@ const Friends = () => {
   };
 
   const blockHandle = (user) => {
+    const blockId = userData.uid === user.senderId ? user.receiverId : user.senderId;
+    const blockName = userData.uid === user.senderId ? user.receiverName : user.senderName;
+    const blockEmail = userData.uid === user.senderId ? user.receiverEmail : user.senderEmail;
+    const blockerId = userData.uid ;
+    const blockerName = userData.displayName ;
+    const blockerEmail = userData.email;
     // console.log(user, "ok");
     set(push(ref(db, "block/")), {
-      senderId: user.senderId,
-      senderName: user.senderName,
-      senderEmail: user.senderEmail,
-      receiverId: user.receiverId,
-      receiverName: user.receiverName,
-      receiverEmail: user.receiverEmail,
+      blockId: blockId,
+      blockName: blockName,
+      blockEmail: blockEmail,
+      blockerId: blockerId,
+      blockerName: blockerName,
+      blockerEmail: blockerEmail,
     });
     console.log(user);
     
@@ -105,18 +111,18 @@ const Friends = () => {
             </div>
             <div className="relative">
               <p onClick={() => optionHandle(index)} className="cursor-pointer">
-                <SlOptions className="hover:scale-110" size={20} />
+                <SlOptions className="hover:scale-150 duration-500" size={20} />
               </p>
               {openOptionIdx === index && (
                 <div className=" absolute top-[-5px] gap-2 right-[30px] flex">
                   <button
                   onClick={() => unfriendHandel(friend)}
-                  className="font-poppins border-black border-[1px] px-3 py-1 rounded-[6px] hover:bg-black hover:text-white duration-300">
+                  className="font-poppins border-black border-[1px] px-3 py-1 rounded-[6px] hover:bg-black hover:text-white duration-300 hover:scale-115">
                     Unfriend
                   </button>
                   <button
                     onClick={() => blockHandle(friend)}
-                    className="font-poppins border-red-500 border-[1px] px-3 py-1 rounded-[6px] hover:bg-red-500 hover:text-white duration-300"
+                    className="font-poppins border-red-500 border-[1px] px-3 py-1 rounded-[6px] hover:bg-red-500 hover:text-white duration-300 hover:scale-115"
                   >
                     Block
                   </button>

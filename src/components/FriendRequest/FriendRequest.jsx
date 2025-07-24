@@ -101,13 +101,13 @@ export const FriendRequest = () => {
             <div>
               <button
                 onClick={() => cancelHandler(req)}
-                className="text-black hover:text-white hover:bg-black px-[8px] py-[4px] rounded-[5px] duration-300 mr-0.5 border-[1px] border-black"
+                className="text-black hover:text-white hover:bg-red-500 px-[8px] py-[4px] rounded-[5px] duration-300 mr-0.5 border-[1px] border-red-500 hover:scale-115"
               >
                 Cancel
               </button>
               <button
                 onClick={() => acceptHandle(req)}
-                className="text-black hover:text-white hover:bg-black px-[8px] py-[4px] rounded-[5px] duration-300 border-[1px] border-black"
+                className="text-black hover:text-white hover:bg-green-500 px-[8px] py-[4px] rounded-[5px] duration-300 border-[1px] border-green-500 hover:scale-115"
               >
                 Accept
               </button>

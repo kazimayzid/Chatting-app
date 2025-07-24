@@ -12,6 +12,7 @@ export const Userlist = () => {
   const data = useSelector((state) => state.user.value);
   const [friendList, setFriendList] = useState([]);
   const [blockList, setBlockList] = useState([]);
+  const [friendRequestList, setFriendRequestList] = useState([])
   const db = getDatabase();
   const [userlist, setUserList] = useState([]);
   useEffect(() => {
@@ -74,15 +75,31 @@ export const Userlist = () => {
       let blockArr = [];
       snapshot.forEach((item) => {
         const val = item.val();
-        if (val.senderId === data.uid || val.receiverId === data.uid) {
+        if (val.blockId === data.uid || val.blockerId === data.uid) {
           const blockedId =
-            val.senderId === data.uid ? val.receiverId : val.senderId;
+            val.blockId === data.uid ? val.blockerId : val.blockId;
           blockArr.push(blockedId);
         }
       });
       setBlockList(blockArr);
     });
   }, []);
+
+  // data fatching from friendRequest collection =====
+  useEffect(() =>{
+    const friendRequestRef = ref(db, "friendRequest/");
+    onValue(friendRequestRef, (snapshot) => {
+      let friendRequestArr = []
+     snapshot.forEach((item) => {
+      const val = item.val();
+      if (val.senderId === data.uid || val.receiverId === data.uid) {
+        friendRequestArr.push(val.senderId)
+      }
+
+     })
+     setFriendRequestList(friendRequestArr)
+    })
+  }, [])
   // friends data===================
 
   return (
@@ -110,7 +127,8 @@ export const Userlist = () => {
           .filter(
             (users) =>
               !friendList.includes(users.userid) &&
-              !blockList.includes(users.userid)
+              !blockList.includes(users.userid) &&
+              !friendRequestList.includes(users.userid)
           )
           .map((user, index) => (
             <div className="flex items-center justify-between pb-[13px] mb-[13px] border-b-[1px] border-[rgba(0,0,0,0.25)]">

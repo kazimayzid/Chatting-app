@@ -5,7 +5,7 @@ import Profile2 from "../../assets/profile2.png";
 import { CiSearch } from "react-icons/ci";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { useSelector } from "react-redux";
-import { getDatabase, onValue, ref } from "firebase/database";
+import { getDatabase, onValue, ref, remove } from "firebase/database";
 export const BlockedUsers = () => {
    const userData = useSelector((state) => state.user.value);
    const [blockList, setBlockList] = useState([])
@@ -17,15 +17,20 @@ export const BlockedUsers = () => {
       let blockArr = []
       snapshot.forEach((item) => {
         const block = item.val();
-        if (userData.uid === block.senderId || userData.uid === block.receiverId) {
-          blockArr.push(block)
+        if (userData.uid === block.blockId || userData.uid === block.blockerId) {
+          blockArr.push({...block, key: item.key})
         }
         
       })
-      setBlockList(blockArr, "blocklist");
+      setBlockList(blockArr);
       
     })
    }, [])
+   
+   const handleUnblock = (item) => {
+        remove(ref(db, `block/${item.key}`)); 
+   }
+   
 
   
   return (
@@ -60,17 +65,21 @@ export const BlockedUsers = () => {
                   ></div>
                   <div className="ml-[14px]">
                     <h1 className="font-poppins font-semibold text-lg text-black">
-                      {userData.uid === block.senderId? block.receiverName : block.senderName}
+                      {userData.uid === block.blockId? block.blockerName : block.blockName}
                     </h1>
                     <p className="font-poppins font-medium text-[14px] text-homePrimary">
                       {" "}
-                      {userData.uid === block.senderId? block.receiverEmail : block.senderEmail}
+                      {userData.uid === block.blockId? block.blockerEmail : block.blockEmail}
                     </p>
                   </div>
                 </div>
-                <button className="font-poppins font-medium text-black hover:text-white hover:bg-green-700 border-2 border-green-700 duration-300 px-[8px] py-[4px] rounded-[5px]">
+                {
+                  userData.uid === block.blockerId ? <button 
+                  onClick={() => handleUnblock(block)}
+                  className="font-poppins font-medium text-black hover:text-white hover:bg-green-700 border-2 border-green-700 duration-300 px-[8px] py-[4px] rounded-[5px] hover:scale-115">
                   Unblock
-                </button>
+                </button> : <div> {block.blockerName} <span className="font-bold text-red-500">blocked</span> you </div>
+                }
               </div>
             ))}
           
