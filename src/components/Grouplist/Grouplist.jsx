@@ -9,12 +9,30 @@ import { ImCancelCircle } from "react-icons/im";
 
 export const Grouplist = () => {
   const [show, setShow] = useState(false);
+  const [grupName, setGrupName] = useState("");
+  const [grupNameErr, setGrupNameErr] = useState("");
+  const [groupName, setGroupName] = useState("");
   const optionHandle = () => {
     setShow(true);
   };
-  const optionCancelHandle = () =>{
-    setShow(false)
-  }
+  const optionCancelHandle = () => {
+    setShow(false);
+  };
+
+  const inputHandle = (e) => {
+    setGrupName(e.target.value);
+    setGrupNameErr("");
+  };
+  const createHandle = () => {
+    if (!grupName) {
+      setGrupNameErr("Plz give a Group name");
+    } else {
+      setGroupName(grupName);
+    }
+    setGrupName("");
+  };
+  console.log(groupName, "name");
+
   // logic for design section====================
   // maping for Group list
 
@@ -67,9 +85,9 @@ export const Grouplist = () => {
             </p>
             <button
               onClick={optionHandle}
-              className="border-[1px] py-1 px-2 rounded-xl border-green-500 hover:scale-115 hover:bg-green-500 hover:text-white text-black  duration-500"
+              className="border-[1px] py-1 px-2 rounded-xl border-green-500 hover:scale-103 font-poppins font-medium hover:bg-green-500 hover:text-white text-black  duration-500 flex items-center gap-x-0.5"
             >
-              <HiUserGroup />
+              Create Group <HiUserGroup />
             </button>
           </div>
 
@@ -112,7 +130,30 @@ export const Grouplist = () => {
         {show && (
           <div className="absolute top-0 right-0 z-50 w-[100%] h-[100vh] backdrop-blur-[4px] p-5">
             <div>
-               <ImCancelCircle onClick={ optionCancelHandle } className="text-[25px] hover:scale-120 duration-500 text-red-500 " />
+              <ImCancelCircle
+                onClick={optionCancelHandle}
+                className="text-[25px] hover:scale-120 duration-500 text-red-500 "
+              />
+            </div>
+            <div className="text-center mt-[50px]">
+              <p className="font-poppins font-bold text-3xl mb-[20px]">
+                Group Name
+              </p>
+              <input
+                value={grupName}
+                onChange={inputHandle}
+                className="border-black focus:outline-none border-[2px] px-1 py-2 font-poppins text-2xl w-[300px] rounded-lg"
+                type="text"
+              />
+              <p className="font-poppins font-medium text-red-500">
+                {grupNameErr}
+              </p>
+              <button
+                onClick={createHandle}
+                className="font-poppins font-semibold text-[20.64px] text-black border-2 border-black  hover:bg-black hover:text-white duration-300 hover:scale-105 py-2 px-10 bg-[#ffffff] rounded-[86px] hover:border-2 cursor-pointer mt-5"
+              >
+                Create
+              </button>
             </div>
           </div>
         )}
