@@ -98,16 +98,16 @@ export const FriendRequest = () => {
                 </p>
               </div>
             </div>
-            <div>
+            <div className="flex gap-x-1">
               <button
                 onClick={() => cancelHandler(req)}
-                className="text-black hover:text-white hover:bg-red-500 px-[8px] py-[4px] rounded-[5px] duration-300 mr-0.5 border-[1px] border-red-500 hover:scale-115"
+                className="text-black hover:text-white hover:bg-red-500 px-[8px] py-[4px] rounded-[5px] duration-300 mr-0.5 border-[1px] border-red-500 hover:scale-110"
               >
                 Cancel
               </button>
               <button
                 onClick={() => acceptHandle(req)}
-                className="text-black hover:text-white hover:bg-green-500 px-[8px] py-[4px] rounded-[5px] duration-300 border-[1px] border-green-500 hover:scale-115"
+                className="text-black hover:text-white hover:bg-green-500 px-[8px] py-[4px] rounded-[5px] duration-300 border-[1px] border-green-500 hover:scale-110"
               >
                 Accept
               </button>
