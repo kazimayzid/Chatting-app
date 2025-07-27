@@ -13,10 +13,12 @@ export const Grouplist = () => {
   const db = getDatabase();
   const [show, setShow] = useState(false);
   const [create, setCreate] = useState(false);
+  const [cancel, setCancel] = useState(false);
   const [grupName, setGrupName] = useState("");
   const [grupNameErr, setGrupNameErr] = useState("");
   const [groupName, setGroupName] = useState("");
   const [friendsData, setFriendsData] = useState([]);
+  const [members, setMembers] = useState([]);
   const userData = useSelector((state) => state.user.value);
   const optionHandle = () => {
     setShow(true);
@@ -65,18 +67,63 @@ export const Grouplist = () => {
     });
   }, [userData.uid]);
 
-  const addHandle = (friend) => {
-    const memberRef = ref(db, `groups/${groupName}/members/${friend.key}`);
-    set(memberRef, {
-      userId:
-        userData.uid === friend.senderId ? friend.receiverId : friend.senderId,
-      userName:
-        userData.uid === friend.senderId
-          ? friend.receiverName
-          : friend.senderName,
-      addedAt: Date.now(),
-    })
+  const addHandle = (member) => {
+    const mbrName =
+      userData.uid === member.senderId
+        ? member.receiverName
+        : member.senderName;
+    const mbrEmail =
+      userData.uid === member.senderId
+        ? member.receiverEmail
+        : member.senderEmail;
+
+    const mbrId =
+      userData.uid === member.senderId ? member.receiverId : member.senderId;
+    if (!members.find((m) => m.memberId === member.mbrId)) {
+      setMembers([
+        ...members,
+        { memberName: mbrName, memberEmail: mbrEmail, memberId: mbrId },
+      ]);
+      setCancel(true);
+    }
   };
+
+  // const cancelHandle = (member) => {
+  //   const mbrName =
+  //     userData.uid === member.senderId
+  //       ? member.receiverName
+  //       : member.senderName;
+  //   const mbrEmail =
+  //     userData.uid === member.senderId
+  //       ? member.receiverEmail
+  //       : member.senderEmail;
+
+  //   const mbrId =
+  //     userData.uid === member.senderId ? member.receiverId : member.senderId;
+
+  //     setMembers(members.filter((m)=> m.){ memberName: mbrName, memberEmail: mbrEmail, memberId: mbrId },
+  //     );
+
+  // };
+
+  const cancelHandle = (member) => {
+    const mbrId =
+      userData.uid === member.senderId ? member.receiverId : member.senderId;
+    setMembers(members.filter((m) => m.memberId !== mbrId));
+  };
+
+
+
+
+
+  const createGroupHandle = ()=> {
+     if (members.length < 2) {
+      alert("Add at least 2 members to create a group");
+    }
+  }
+
+
+
 
   // logic for design section====================
   // maping for Group list
@@ -206,10 +253,17 @@ export const Grouplist = () => {
         {create && (
           <div className="absolute top-0 right-0 z-50 w-[100%] h-[100vh] backdrop-blur-[4px] p-5">
             <div className="text-center">
-              <ImCancelCircle
-                onClick={optionCancelHandle}
-                className="text-[25px] hover:scale-120 duration-500 text-red-500 "
-              />
+              <div className="flex justify-between items-center">
+                <ImCancelCircle
+                  onClick={optionCancelHandle}
+                  className="text-[25px] hover:scale-120 duration-500 text-red-500 "
+                />
+                <button
+                onClick={createGroupHandle}
+                className="font-poppins font-normal text-[18px] text-homePrimary border-[1px] rounded-[6px] px-1 border-green-500 hover:scale-105 hover:bg-green-500 hover:text-white duration-300">
+                  Create Group
+                </button>
+              </div>
               <p className="font-poppins font-bold text-2xl text-homePrimary">
                 {groupName}
               </p>
@@ -243,12 +297,27 @@ export const Grouplist = () => {
                     </div>
                   </div>
                   <div>
-                    <button
-                      onClick={() => addHandle(friend)}
-                      className="font-poppins border-black border-[1px] px-3 py-1 rounded-[6px] hover:bg-black hover:text-white duration-300 hover:scale-115"
-                    >
-                      Add
-                    </button>
+                    {members.find(
+                      (m) =>
+                        m.memberId ===
+                        (userData.uid === friend.senderId
+                          ? friend.receiverId
+                          : friend.senderId)
+                    ) ? (
+                      <button
+                        onClick={() => cancelHandle(friend)}
+                        className="font-poppins border-red-600 border-[1px] px-3 py-1 rounded-[6px] hover:bg-red-600 hover:text-white duration-300 hover:scale-115"
+                      >
+                        Cancel
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => addHandle(friend)}
+                        className="font-poppins border-black border-[1px] px-3 py-1 rounded-[6px] hover:bg-black hover:text-white duration-300 hover:scale-115"
+                      >
+                        Add
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
