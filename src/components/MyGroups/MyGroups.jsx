@@ -4,12 +4,16 @@ import Profile1 from "../../assets/Profile1.png";
 import Profile2 from "../../assets/profile2.png";
 import { CiSearch } from "react-icons/ci";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
-import { getDatabase, onValue, ref } from "firebase/database";
+import { getDatabase, onValue, ref, remove } from "firebase/database";
 import { useSelector } from "react-redux";
 import { ImCancelCircle } from "react-icons/im";
+import { RiDeleteBin5Line } from "react-icons/ri";
+import { FaInfoCircle } from "react-icons/fa";
+import { Bounce, toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
 export const MyGroups = () => {
   const userData = useSelector((state) => state.user.value);
-  const [show, setShow] = useState(false);
   const [groups, setGroups] = useState([]);
   const db = getDatabase();
   useEffect(() => {
@@ -28,15 +32,23 @@ export const MyGroups = () => {
     });
   }, []);
 
-  const groupHandle = () => {
-    setShow(true);
+  const romveHandle = (items) => {
+    remove(ref(db, `groups/${items.key}`));
+
+    toast.error("Group Delete");
   };
-  const optionCancelHandle = () => {
-     setShow(false)
-  }
 
   return (
     <>
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="light"
+        transition={Bounce}
+      />
       <div className="relative h-[100%] shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[20px] overflow-hidden">
         <div className="h-[20%]">
           <div className="flex justify-between items-center px-4">
@@ -59,9 +71,8 @@ export const MyGroups = () => {
         <div className=" mt-[15px] px-[22px] rounded-[20px] h-[85%] overflow-y-auto">
           {groups.map((group, index) => (
             <div
-              onClick={groupHandle}
               key={index}
-              className="flex items-center justify-between pb-[13px] mb-[13px] border-b-[1px] border-[rgba(0,0,0,0.25)] cursor-pointer"
+              className="flex items-center justify-between pb-[13px] mb-[13px] border-b-[1px] border-[rgba(0,0,0,0.25)] "
             >
               <div className="flex items-center">
                 <div
@@ -78,23 +89,23 @@ export const MyGroups = () => {
                   </p>
                 </div>
               </div>
-              <p className="font-poppins font-medium text-[10px] text-[rgba(0,0,0,0.5)]">
-                {group.date}
-              </p>
+              <div className="flex gap-x-2">
+                <p className="p-1 border-[1px] border-homePrimary rounded-lg cursor-pointer hover:scale-110 duration-300">
+                  <FaInfoCircle size={25} className="text-homePrimary" />
+                </p>
+                <p
+                  onClick={() => romveHandle(group)}
+                  className="p-1 border-[1px] border-red-400 rounded-lg cursor-pointer hover:scale-110 hover:bg-red-400 duration-300"
+                >
+                  <RiDeleteBin5Line
+                    size={25}
+                    className="text-red-400 hover:text-white"
+                  />
+                </p>
+              </div>
             </div>
           ))}
         </div>
-
-        {show && (
-          <div className="absolute top-0 right-0 z-50 w-[100%] h-[100vh] backdrop-blur-[4px] p-5">
-            <div>
-              <ImCancelCircle
-                onClick={optionCancelHandle}
-                className="text-[25px] hover:scale-120 duration-500 text-red-500 "
-              />
-            </div>
-          </div>
-        )}
       </div>
     </>
   );

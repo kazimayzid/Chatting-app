@@ -151,7 +151,7 @@ export const Userlist = () => {
                   </p>
                 </div>
               </div>
-              <button className="text-black hover:text-white hover:bg-black px-[8px] py-[4px] rounded-[5px]">
+              <button className="text-black border-[1px] duration-300 hover:scale-120 hover:text-white hover:bg-black px-[8px] py-[4px] rounded-[5px]">
                 {requestList.includes(`${data.uid}_${user.userid}`) ? (
                   <FaMinus onClick={() => handleRequestCancel(user)} />
                 ) : (

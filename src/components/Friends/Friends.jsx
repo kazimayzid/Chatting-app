@@ -122,7 +122,7 @@ const Friends = () => {
                   </button>
                   <button
                     onClick={() => blockHandle(friend)}
-                    className="font-poppins border-red-500 border-[1px] px-3 py-1 rounded-[6px] hover:bg-red-500 hover:text-white duration-300 hover:scale-115"
+                    className="font-poppins border-red-400 border-[1px] px-3 py-1 rounded-[6px] hover:bg-red-400 hover:text-white duration-300 hover:scale-115"
                   >
                     Block
                   </button>

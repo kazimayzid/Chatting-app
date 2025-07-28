@@ -9,7 +9,7 @@ import { ImCancelCircle } from "react-icons/im";
 import { getDatabase, onValue, push, ref, set } from "firebase/database";
 import { useSelector } from "react-redux";
 import { Bounce, toast, ToastContainer } from "react-toastify";
-
+import "react-toastify/dist/ReactToastify.css";
 export const Grouplist = () => {
   const db = getDatabase();
   const [show, setShow] = useState(false);
@@ -110,9 +110,23 @@ export const Grouplist = () => {
 
   const createGroupHandle = () => {
     if (members.length < 2) {
-      alert("Add at least 2 members to create a group");
+      toast.error("Add at least 2 members to create a group");
       return;
     }
+    toast.success("Group Created!", {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
+    });
+    setTimeout(() => {
+      setCreate(false);
+    }, 1000);
     set(push(ref(db, "groups/")), {
       groupName,
       adminId: userData.uid,
@@ -137,20 +151,6 @@ export const Grouplist = () => {
       ),
     });
 
-    setTimeout(() => {
-      toast.success("Group Created!", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-      });
-      setCreate(false);
-    }, 2000);
     setMembers([]);
   };
 
@@ -171,21 +171,21 @@ export const Grouplist = () => {
   }, []);
 
   const joinGroupHandle = (groupKey) => {
-  const groupRef = ref(db, `groups/${groupKey}/members/${userData.uid}`);
-  set(groupRef, {
-    name: userData.displayName,
-    email: userData.email,
-    id: userData.uid,
-  }).then(() => {
-    toast.success("Joined the group!");
-  });
-};
+    const groupRef = ref(db, `groups/${groupKey}/members/${userData.uid}`);
+    set(groupRef, {
+      name: userData.displayName,
+      email: userData.email,
+      id: userData.uid,
+    }).then(() => {
+      toast.success("Joined the group!");
+    });
+  };
 
   return (
     <>
       <ToastContainer
         position="top-center"
-        autoClose={5000}
+        autoClose={2000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick={false}
@@ -241,8 +241,9 @@ export const Grouplist = () => {
                 </div>
               </div>
               <button
-              onClick={() => joinGroupHandle(group.key)}
-              className="font-poppins font-semibold text-[20px] text-black px-[22px] hover:text-white hover:bg-green-500 border-green-500 hover:scale-105 border-[1px] rounded-[5px] duration-300 mr-1">
+                onClick={() => joinGroupHandle(group.key)}
+                className="font-poppins font-semibold text-[20px] text-black px-[22px] hover:text-white hover:bg-green-500 border-green-500 hover:scale-105 border-[1px] rounded-[5px] duration-300 mr-1"
+              >
                 Join
               </button>
             </div>
@@ -258,7 +259,7 @@ export const Grouplist = () => {
             </div>
             <div className="text-center mt-[50px]">
               <p className="font-poppins font-bold text-3xl mb-[20px]">
-                Group Name
+                Set Group Name
               </p>
               <input
                 value={grupName}
@@ -280,7 +281,7 @@ export const Grouplist = () => {
         )}
 
         {create && (
-          <div className="absolute top-0 right-0 z-50 w-[100%] h-[100vh] backdrop-blur-[4px] p-5">
+          <div className="absolute top-0 right-0 z-50 w-[100%] h-[100vh] bg-white p-5">
             <div className="text-center">
               <div className="flex justify-between items-center">
                 <ImCancelCircle
@@ -294,13 +295,11 @@ export const Grouplist = () => {
                   Create Group
                 </button>
               </div>
-              <p className="font-poppins font-bold text-2xl text-homePrimary">
-                {groupName}
-              </p>
             </div>
             <div className="border-b-[1px] border-[#00000050] mb-3">
-              <p className="font-poppins font-normal text-[20px] text-homePrimary">
-                Add member
+              <p className="font-poppins font-normal text-[20px] text-homePrimary py-3">
+                Add members in <span className="font-bold">{groupName}</span>{" "}
+                group
               </p>
             </div>
             <div className="overflow-y-auto h-[300px]">
