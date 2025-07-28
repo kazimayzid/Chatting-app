@@ -92,7 +92,7 @@ const Friends = () => {
               <div
                 key={index}
                 className="w-[70px] h-[70px] bg-center bg-cover rounded-full"
-                style={{ backgroundImage: `url(${Profile})` }}
+                style={{ backgroundImage: `url(${Profile2})` }}
               ></div>
               <div className="ml-[14px]">
                 <h1 className="font-poppins font-semibold text-lg text-black">

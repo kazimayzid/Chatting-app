@@ -8,6 +8,7 @@ import { HiUserGroup } from "react-icons/hi2";
 import { ImCancelCircle } from "react-icons/im";
 import { getDatabase, onValue, push, ref, set } from "firebase/database";
 import { useSelector } from "react-redux";
+import { Bounce, toast, ToastContainer } from "react-toastify";
 
 export const Grouplist = () => {
   const db = getDatabase();
@@ -19,6 +20,7 @@ export const Grouplist = () => {
   const [groupName, setGroupName] = useState("");
   const [friendsData, setFriendsData] = useState([]);
   const [members, setMembers] = useState([]);
+  const [groups, setGroups] = useState([]);
   const userData = useSelector((state) => state.user.value);
   const optionHandle = () => {
     setShow(true);
@@ -36,12 +38,6 @@ export const Grouplist = () => {
     if (!grupName) {
       setGrupNameErr("Plz give a Group name");
     } else {
-      set(push(ref(db, "groups/")), {
-        groupName: grupName,
-        adminId: userData.uid,
-        adminName: userData.displayName,
-        createdAt: Date.now(),
-      });
       setGroupName(grupName);
     }
     setGrupName("");
@@ -112,63 +108,94 @@ export const Grouplist = () => {
     setMembers(members.filter((m) => m.memberId !== mbrId));
   };
 
-
-
-
-
-  const createGroupHandle = ()=> {
-     if (members.length < 2) {
+  const createGroupHandle = () => {
+    if (members.length < 2) {
       alert("Add at least 2 members to create a group");
+      return;
     }
-  }
+    set(push(ref(db, "groups/")), {
+      groupName,
+      adminId: userData.uid,
+      adminName: userData.displayName,
+      createdAt: Date.now(),
+      members: members.reduce(
+        (acc, member) => {
+          acc[member.memberId] = {
+            name: member.memberName,
+            email: member.memberEmail,
+            id: member.memberId,
+          };
+          return acc;
+        },
+        {
+          [userData.uid]: {
+            name: userData.displayName,
+            email: userData.email,
+            id: userData.uid,
+          },
+        }
+      ),
+    });
 
+    setTimeout(() => {
+      toast.success("Group Created!", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      setCreate(false);
+    }, 2000);
+    setMembers([]);
+  };
 
+  useEffect(() => {
+    const groupListRef = ref(db, "groups/");
+    onValue(groupListRef, (snapshot) => {
+      let grouplistArr = [];
+      snapshot.forEach((items) => {
+        const val = items.val();
+        console.log(val, "helo");
 
+        if (!val.members[userData.uid]) {
+          grouplistArr.push({ ...val, key: items.key });
+        }
+      });
+      setGroups(grouplistArr);
+    });
+  }, []);
 
-  // logic for design section====================
-  // maping for Group list
+  const joinGroupHandle = (groupKey) => {
+  const groupRef = ref(db, `groups/${groupKey}/members/${userData.uid}`);
+  set(groupRef, {
+    name: userData.displayName,
+    email: userData.email,
+    id: userData.uid,
+  }).then(() => {
+    toast.success("Joined the group!");
+  });
+};
 
-  const groupList = [
-    {
-      img: Profile,
-      name: "kazi mayzid",
-      message: "how are you",
-      button: "Join",
-    },
-    {
-      img: Profile1,
-      name: "Johan",
-      message: "how are you",
-      button: "Join",
-    },
-    {
-      img: Profile2,
-      name: "Adam ambros",
-      message: "how are you",
-      button: "Join",
-    },
-    {
-      img: Profile1,
-      name: "kazi mayzid",
-      message: "how are you",
-      button: "Join",
-    },
-    {
-      img: Profile,
-      name: "kazi mayzid",
-      message: "how are you",
-      button: "Join",
-    },
-    {
-      img: Profile,
-      name: "kazi mayzid",
-      message: "how are you",
-      button: "Join",
-    },
-  ];
-  // Logic for design End==============================
   return (
     <>
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
       <div className="relative h-[100%] shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[20px] overflow-hidden">
         <div className="h-[20%]">
           <div className="flex justify-between items-center px-4">
@@ -195,26 +222,28 @@ export const Grouplist = () => {
         </div>
 
         <div className=" mt-[15px] px-[22px] rounded-[20px] h-[75%] overflow-y-auto">
-          {groupList.map((group, index) => (
+          {groups.map((group, index) => (
             <div className="flex items-center justify-between pb-[13px] mb-[13px] border-b-[1px] border-[rgba(0,0,0,0.25)]">
               <div className="flex items-center">
                 <div
                   key={index}
                   className="w-[70px] h-[70px] bg-center bg-cover rounded-full"
-                  style={{ backgroundImage: `url(${group.img})` }}
+                  style={{ backgroundImage: `url(${Profile1})` }}
                 ></div>
                 <div className="ml-[14px]">
                   <h1 className="font-poppins font-semibold text-lg text-black">
-                    {group.name}
+                    {group.groupName}
                   </h1>
                   <p className="font-poppins font-medium text-[14px] text-homePrimary">
                     {" "}
-                    {group.message}
+                    {group.adminName}
                   </p>
                 </div>
               </div>
-              <button className="font-poppins font-semibold text-[20px] text-black px-[22px] hover:text-white hover:bg-black rounded-[5px] duration-300 mr-1">
-                {group.button}
+              <button
+              onClick={() => joinGroupHandle(group.key)}
+              className="font-poppins font-semibold text-[20px] text-black px-[22px] hover:text-white hover:bg-green-500 border-green-500 hover:scale-105 border-[1px] rounded-[5px] duration-300 mr-1">
+                Join
               </button>
             </div>
           ))}
@@ -244,7 +273,7 @@ export const Grouplist = () => {
                 onClick={createHandle}
                 className="font-poppins font-semibold text-[20.64px] text-black border-2 border-black  hover:bg-black hover:text-white duration-300 hover:scale-105 py-2 px-10 bg-[#ffffff] rounded-[86px] hover:border-2 cursor-pointer mt-5"
               >
-                Create
+                Enter
               </button>
             </div>
           </div>
@@ -259,8 +288,9 @@ export const Grouplist = () => {
                   className="text-[25px] hover:scale-120 duration-500 text-red-500 "
                 />
                 <button
-                onClick={createGroupHandle}
-                className="font-poppins font-normal text-[18px] text-homePrimary border-[1px] rounded-[6px] px-1 border-green-500 hover:scale-105 hover:bg-green-500 hover:text-white duration-300">
+                  onClick={createGroupHandle}
+                  className="font-poppins font-normal text-[18px] text-homePrimary border-[1px] rounded-[6px] px-1 border-green-500 hover:scale-105 hover:bg-green-500 hover:text-white duration-300"
+                >
                   Create Group
                 </button>
               </div>
