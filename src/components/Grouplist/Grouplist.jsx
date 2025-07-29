@@ -8,8 +8,7 @@ import { HiUserGroup } from "react-icons/hi2";
 import { ImCancelCircle } from "react-icons/im";
 import { getDatabase, onValue, push, ref, set } from "firebase/database";
 import { useSelector } from "react-redux";
-import { Bounce, toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast, { Toaster } from 'react-hot-toast';
 export const Grouplist = () => {
   const db = getDatabase();
   const [show, setShow] = useState(false);
@@ -113,17 +112,7 @@ export const Grouplist = () => {
       toast.error("Add at least 2 members to create a group");
       return;
     }
-    toast.success("Group Created!", {
-      position: "top-center",
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-      transition: Bounce,
-    });
+    toast.success("Group Created!");
     setTimeout(() => {
       setCreate(false);
     }, 1000);
@@ -183,19 +172,7 @@ export const Grouplist = () => {
 
   return (
     <>
-      <ToastContainer
-        position="top-center"
-        autoClose={2000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        transition={Bounce}
-      />
+      <Toaster/>
       <div className="relative h-[100%] shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[20px] overflow-hidden">
         <div className="h-[20%]">
           <div className="flex justify-between items-center px-4">

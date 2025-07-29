@@ -53,7 +53,7 @@ export const BlockedUsers = () => {
             <PiDotsThreeVerticalBold className="absolute top-[50%] translate-[-50%] right-[23px] w-[19px] h-[19px] text-black text-[5px] font-bold " />
           </div>
         </div>
-        <div className=" mt-[15px] px-[22px] rounded-[20px] h-[85%] overflow-y-auto">
+        <div className=" mt-[15px] px-[22px] rounded-[20px] h-[75%] overflow-y-auto">
          
             {blockList.map((block, index) => (
               <div className=" flex items-center justify-between pb-[13px] mb-[13px] border-b-[1px] border-[rgba(0,0,0,0.25)]">

@@ -27,14 +27,12 @@ export default function Home() {
   return (
     <>
       {/* {verify ? ( */}
-      <div className="flex gap-x-[43px] w-full h-screen overflow-hidden p-[20px]">
+      <div className=" gap-x-[43px] w-full h-screen overflow-hidden ">
         {/* Sidebar (Left Panel) */}
-        <div className="w-[10%] h-full rounded-[20px] bg-[#1E1E1E] pt-[38px] overflow-hidden">
-          <Sidebar />
-        </div>
+        
 
         {/* Main Content */}
-        <div className="w-[90%] flex flex-col h-full overflow-hidden">
+        <div className=" flex flex-col h-full overflow-hidden">
           {/* Top Section */}
           <div className="flex-1 flex gap-x-[22px] h-[100%] overflow-hidden p-2">
             <div className="w-[34%] h-[100%] shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[20px] overflow-hidden">
@@ -50,13 +48,13 @@ export default function Home() {
 
           {/* Bottom Section */}
           <div className="flex-1 flex gap-x-[22px] h-[100%] overflow-hidden p-2">
-            <div className="w-[34%] h-[100%] shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[20px] overflow-hidden">
+            <div className="w-[34%] h-[98%] shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[20px] overflow-hidden">
               <FriendRequest />
             </div>
-            <div className="w-[33%] h-[100%] shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[20px] overflow-hidden">
+            <div className="w-[33%] h-[98%] shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[20px] overflow-hidden">
               <MyGroups />
             </div>
-            <div className="w-[33%] h-[100%] shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[20px] overflow-hidden">
+            <div className="w-[33%] h-[98%] shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[20px] overflow-hidden">
               <BlockedUsers />
             </div>
           </div>

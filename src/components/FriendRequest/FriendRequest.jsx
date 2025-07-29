@@ -77,7 +77,7 @@ export const FriendRequest = () => {
         </div>
       </div>
 
-      <div className=" mt-[15px] px-[22px] rounded-[20px] h-[85%] overflow-y-auto">
+      <div className=" mt-[15px] px-[22px] rounded-[20px] h-[75%] overflow-y-auto">
         {requestList.map((req, index) => (
           <div
             key={index}

@@ -5,7 +5,7 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { VscSignOut } from "react-icons/vsc";
 import { useDispatch, useSelector } from "react-redux";
 import { userLogInfo } from "../../features/slice/userSlice";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 export const Sidebar = () => {
   const data = useSelector(state=> state.user.value);
@@ -23,28 +23,32 @@ export const Sidebar = () => {
   const navData = [
     {
       icon: <AiOutlineHome className="w-[46px] h-[43px]" />,
+      link: "/"
     },
     {
       icon: <AiTwotoneMessage className="w-[46px] h-[43px]" />,
+      link: "/message"
     },
     {
       icon: <IoSettingsOutline className="w-[46px] h-[43px]" />,
+      link: "/settings"
     },
   ];
 
   return (
     <>
-      <div className="flex flex-col h-full items-center gap-5">
+      <div className="flex flex-col h-full items-center gap-5 pt-[38px]">
         <div className="rounded-full w-[100px] h-[100px] bg-[url(assets/Mayzidpic.JPG)] bg-center bg-cover bg-no-repeat"></div>
         <p className="text-white font-poppins text-[16px]">{data.displayName}</p>
         <div className="w-full mt-5 flex flex-col gap-4 items-center pl-[25px]">
           {navData.map((value, index) => (
-            <div
+            <NavLink
+              to={value.link}
               key={index}
               className="relative z-10 hover:bg-white text-white hover:text-black pl-[45px] pr-[69px] py-[20px] rounded-l-[25px] text-[24px] after:absolute after:content-[''] after:top-0 after:right-0 after:w-[100%] after:h-[100%] after:bg-[#1E1E1E] after:rounded-l-[25px] hover:after:w-[8px] after:transition after:-z-10 transition-all"
             >
               {value.icon}
-            </div>
+            </NavLink>
           ))}
         </div>
         <div
