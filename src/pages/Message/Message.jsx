@@ -4,6 +4,8 @@ import Profile1 from "../../assets/Profile1.png";
 import Profile2 from "../../assets/profile2.png";
 import { CiSearch } from "react-icons/ci";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
+import { BiLogoTelegram } from "react-icons/bi";
+
 import {
   getDatabase,
   onValue,
@@ -14,10 +16,12 @@ import {
 } from "firebase/database";
 import { useSelector } from "react-redux";
 import { SlOptions } from "react-icons/sl";
+import { useToaster } from "react-hot-toast";
 
 const Friends = () => {
   const userData = useSelector((state) => state.user.value);
   const [friendsData, setFriendsData] = useState([]);
+  const [chat, setChat] = useState([]);
   const [openOptionIdx, setOpenOptionIdx] = useState(null);
   const [show, setShow] = useState(false);
   const db = getDatabase();
@@ -70,8 +74,8 @@ const Friends = () => {
     remove(ref(db, `friends/${user.key}`));
   };
   const chatHandle = (items) => {
-    console.log(items, "hello");
-
+    let chatArr = [items];
+    setChat(chatArr);
     setShow(true);
   };
 
@@ -157,11 +161,56 @@ const Friends = () => {
             ))}
           </div>
         </div>
-        <div className="w-[70%]  rounded-[20px] h-[98vh] p-2 shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
-          {show && <div>
-            
-            
-            </div>}
+        <div className="w-[70%]  rounded-[20px] h-[98vh] px-5 py-4 shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
+          {show &&
+            chat.length > 0 &&
+            chat.map((items) => (
+              <div
+                key={items.key}
+                className="flex flex-col justify-between h-full"
+              >
+                <div className="flex flex-col">
+                  <div className="flex justify-between items-center border-b-[1px] border-[rgba(0,0,0,0.25)] pb-5">
+                    <div className="flex items-center">
+                      <div
+                        className="w-[70px] h-[70px] bg-center bg-cover rounded-full"
+                        style={{ backgroundImage: `url(${Profile2})` }}
+                      ></div>
+                      <div className="ml-[14px]">
+                        <h1 className="font-poppins font-semibold text-lg text-black">
+                          {/* {friend.friendName} */}
+                          {userData.uid === items.senderId
+                            ? items.receiverName
+                            : items.senderName}
+                        </h1>
+                        <p className="font-poppins font-medium text-[14px] text-homePrimary">
+                          {" "}
+                          {userData.uid === items.senderId
+                            ? items.receiverEmail
+                            : items.senderEmail}
+                        </p>
+                      </div>
+                    </div>
+                    <div>
+                      <SlOptions
+                        className="hover:scale-150 duration-500"
+                        size={20}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex-1 overflow-y-auto mt-4"></div>
+                </div>
+                <div className="flex justify-between items-center border-t-[1px] border-[rgba(0,0,0,0.25)] pt-4">
+                  <input
+                    className="w-[95%]  py-2 px-1 focus:outline-none bg-[#F1F1F1] rounded-[10px]"
+                    type="text"
+                  />
+                  <button className="border-[1px] px-2 py-2 rounded-[10px] hover:bg-black duration-300 hover:text-white">
+                    <BiLogoTelegram size={24} />
+                  </button>
+                </div>
+              </div>
+            ))}
         </div>
       </div>
     </>
