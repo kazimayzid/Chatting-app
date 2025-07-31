@@ -16,7 +16,6 @@ import {
 } from "firebase/database";
 import { useSelector } from "react-redux";
 import { SlOptions } from "react-icons/sl";
-import { useToaster } from "react-hot-toast";
 
 const Friends = () => {
   const userData = useSelector((state) => state.user.value);
@@ -24,6 +23,8 @@ const Friends = () => {
   const [chat, setChat] = useState([]);
   const [openOptionIdx, setOpenOptionIdx] = useState(null);
   const [show, setShow] = useState(false);
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
   const db = getDatabase();
   useEffect(() => {
     const starCountRef = ref(db, "friends/");
@@ -73,16 +74,67 @@ const Friends = () => {
   const unfriendHandel = (user) => {
     remove(ref(db, `friends/${user.key}`));
   };
-  const chatHandle = (items) => {
-    let chatArr = [items];
-    setChat(chatArr);
-    setShow(true);
+  const getChatId = (uid1, uid2) => {
+    return [uid1, uid2].sort().join("_");
   };
+
+  const chatHandle = (friend) => {
+    const otherUserId =
+      userData.uid === friend.receiverId ? friend.senderId : friend.receiverId;
+    const chatId = getChatId(userData.uid, otherUserId);
+    setChat([{ ...friend, chatId }]);
+    setShow(true);
+    listenToMessages(chatId);
+  };
+
+  const listenToMessages = (chatId) => {
+    const messagesRef = ref(db, `chats/${chatId}/messages`);
+    onValue(messagesRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const msgs = Object.values(snapshot.val());
+        msgs.sort((a, b) => a.timestamp - b.timestamp);
+        setMessages(msgs);
+      } else {
+        setMessages([]);
+      }
+    });
+  };
+
+  const messageHandle = (e) => {
+    setMessage(e.target.value);
+  };
+
+  const messageButtonHandle = (chatUser) => {
+    if (!message.trim()) return;
+
+    const otherUserId =
+      userData.uid === chatUser.senderId
+        ? chatUser.receiverId
+        : chatUser.senderId;
+
+    const chatId = getChatId(userData.uid, otherUserId);
+    const newMsgRef = push(ref(db, `chats/${chatId}/messages`));
+
+    set(newMsgRef, {
+      senderId: userData.uid,
+      text: message,
+      timestamp: Date.now(),
+    });
+
+    setMessage("");
+  };
+
+    useEffect(() => {
+    const chatBox = document.querySelector(".chat-box");
+    if (chatBox) {
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  }, [messages]);
 
   return (
     <>
       <div className="flex gap-x-3">
-        <div className="w-[30%] shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[20px] overflow-hidden">
+        <div className="w-[50%] shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-[20px] overflow-hidden">
           <div className="h-[10vh]">
             <div className="flex justify-between items-center px-4">
               <p className="font-poppins font-semibold text-[20px] text-black">
@@ -161,7 +213,7 @@ const Friends = () => {
             ))}
           </div>
         </div>
-        <div className="w-[70%]  rounded-[20px] h-[98vh] px-5 py-4 shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
+        <div className="w-[60%]  rounded-[20px] h-[98vh] px-5 py-4 shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
           {show &&
             chat.length > 0 &&
             chat.map((items) => (
@@ -198,14 +250,42 @@ const Friends = () => {
                       />
                     </div>
                   </div>
-                  <div className="flex-1 overflow-y-auto mt-4"></div>
+                  <div className="flex-1 overflow-hidden overflow-y-auto max-h-[75vh]  mt-4">
+                    <div className="chat-box flex-1 overflow-y-auto mt-4">
+                      {messages.map((msg, i) => (
+                        <div
+                          key={i}
+                          className={`mb-2 ${
+                            msg.senderId === userData.uid
+                              ? "text-right"
+                              : "text-left"
+                          }`}
+                        >
+                          <p
+                            className={`inline-block px-3 py-2 rounded-lg ${
+                              msg.senderId === userData.uid
+                                ? "bg-blue-500 text-white"
+                                : "bg-gray-200"
+                            }`}
+                          >
+                            {msg.text}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
                 <div className="flex justify-between items-center border-t-[1px] border-[rgba(0,0,0,0.25)] pt-4">
                   <input
+                    value={message}
+                    onChange={messageHandle}
                     className="w-[95%]  py-2 px-1 focus:outline-none bg-[#F1F1F1] rounded-[10px]"
                     type="text"
                   />
-                  <button className="border-[1px] px-2 py-2 rounded-[10px] hover:bg-black duration-300 hover:text-white">
+                  <button
+                    onClick={() => messageButtonHandle(items)}
+                    className="border-[1px] px-2 py-2 rounded-[10px] hover:bg-black duration-300 hover:text-white"
+                  >
                     <BiLogoTelegram size={24} />
                   </button>
                 </div>
