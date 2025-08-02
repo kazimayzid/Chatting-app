@@ -5,7 +5,7 @@ import Profile2 from "../../assets/profile2.png";
 import { CiSearch } from "react-icons/ci";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { BiLogoTelegram } from "react-icons/bi";
-
+import EmojiPicker from "emoji-picker-react";
 import {
   getDatabase,
   onValue,
@@ -124,7 +124,7 @@ const Friends = () => {
     setMessage("");
   };
 
-    useEffect(() => {
+  useEffect(() => {
     const chatBox = document.querySelector(".chat-box");
     if (chatBox) {
       chatBox.scrollTop = chatBox.scrollHeight;
@@ -158,9 +158,16 @@ const Friends = () => {
                 <div className="flex items-center">
                   <div
                     key={index}
-                    className="w-[70px] h-[70px] bg-center bg-cover rounded-full"
-                    style={{ backgroundImage: `url(${Profile2})` }}
-                  ></div>
+                    className="w-[70px] h-[70px] bg-center bg-cover rounded-full bg-blue-100 text-3xl flex items-center justify-center font-bold text-[#000000b6]"
+                    // style={{ backgroundImage: `url(${Profile2})` }}
+                  >
+                    {(userData.uid === friend.senderId
+                      ? friend.receiverName
+                      : friend.senderName
+                    )
+                      .charAt(0)
+                      .toUpperCase()}
+                  </div>
                   <div className="ml-[14px]">
                     <h1 className="font-poppins font-semibold text-lg text-black">
                       {/* {friend.friendName} */}
@@ -225,9 +232,16 @@ const Friends = () => {
                   <div className="flex justify-between items-center border-b-[1px] border-[rgba(0,0,0,0.25)] pb-5">
                     <div className="flex items-center">
                       <div
-                        className="w-[70px] h-[70px] bg-center bg-cover rounded-full"
-                        style={{ backgroundImage: `url(${Profile2})` }}
-                      ></div>
+                        className="w-[70px] h-[70px] bg-center bg-cover rounded-full bg-blue-100 text-3xl flex items-center justify-center font-bold text-[#000000b6]"
+                        // style={{ backgroundImage: `url(${Profile2})` }}
+                      >
+                        {(userData.uid === items.senderId
+                          ? items.receiverName
+                          : items.senderName
+                        )
+                          .charAt(0)
+                          .toUpperCase()}
+                      </div>
                       <div className="ml-[14px]">
                         <h1 className="font-poppins font-semibold text-lg text-black">
                           {/* {friend.friendName} */}
@@ -262,10 +276,10 @@ const Friends = () => {
                           }`}
                         >
                           <p
-                            className={`inline-block px-3 py-2 rounded-lg ${
+                            className={`inline-block max-w-[70%] px-4 py-3 text-[15px] leading-5 rounded-lg ${
                               msg.senderId === userData.uid
-                                ? "bg-blue-500 text-white"
-                                : "bg-gray-200"
+                                ? "bg-black text-white [clip-path:polygon(0%_0%,90%_0,91%_91%,100%_100%,69%_100%,26%_100%,0_100%)]"
+                                : "bg-gray-200 text-black [clip-path:polygon(8%_0,100%_0,100%_100%,100%_100%,69%_100%,0_100%,8%_90%)]"
                             }`}
                           >
                             {msg.text}
@@ -275,13 +289,16 @@ const Friends = () => {
                     </div>
                   </div>
                 </div>
-                <div className="flex justify-between items-center border-t-[1px] border-[rgba(0,0,0,0.25)] pt-4">
+                <div className="relative flex justify-between items-center border-t-[1px] border-[rgba(0,0,0,0.25)] pt-4">
                   <input
                     value={message}
                     onChange={messageHandle}
                     className="w-[95%]  py-2 px-1 focus:outline-none bg-[#F1F1F1] rounded-[10px]"
                     type="text"
                   />
+                  <div className="absolute top-[-400px] ring-0">
+                    <EmojiPicker />
+                  </div>
                   <button
                     onClick={() => messageButtonHandle(items)}
                     className="border-[1px] px-2 py-2 rounded-[10px] hover:bg-black duration-300 hover:text-white"

@@ -38,7 +38,7 @@ export const Sidebar = () => {
   return (
     <>
       <div className="flex flex-col h-full items-center gap-5 pt-[38px]">
-        <div className="rounded-full w-[100px] h-[100px] bg-[url(assets/Mayzidpic.JPG)] bg-center bg-cover bg-no-repeat"></div>
+        <div className="w-[100px] h-[100px] bg-center bg-cover rounded-full bg-blue-100 text-5xl flex items-center justify-center font-bold text-[#000000b6]">{(data.displayName).charAt(0).toUpperCase()}</div>
         <p className="text-white font-poppins text-[16px]">{data.displayName}</p>
         <div className="w-full mt-5 flex flex-col gap-4 items-center pl-[25px]">
           {navData.map((value, index) => (

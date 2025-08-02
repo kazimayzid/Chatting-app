@@ -85,9 +85,9 @@ export const FriendRequest = () => {
           >
             <div className="flex items-center">
               <div
-                className="w-[70px] h-[70px] bg-center bg-cover rounded-full"
-                style={{ backgroundImage: `url(${Profile})` }}
-              ></div>
+                className="bg-blue-100 text-3xl flex items-center justify-center font-bold text-[#000000b6] w-[70px] h-[70px] bg-center bg-cover rounded-full"
+                // style={{ backgroundImage: `url(${Profile})` }}
+              >{(req.senderName).charAt(0).toUpperCase()}</div>
               <div className="ml-[14px]">
                 <h1 className="font-poppins font-semibold text-lg text-black">
                   {req.senderName}

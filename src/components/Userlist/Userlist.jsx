@@ -135,13 +135,13 @@ export const Userlist = () => {
               <div className="flex items-center">
                 <div
                   key={index}
-                  className="w-[70px] h-[70px] bg-center bg-cover rounded-full"
-                  style={{
-                    backgroundImage: `url(${
-                      user.profile ? user.profile : Profile
-                    })`,
-                  }}
-                ></div>
+                  className="bg-blue-100 text-3xl flex items-center justify-center font-bold text-[#000000b6] w-[70px] h-[70px] bg-center bg-cover rounded-full"
+                  // style={{
+                  //   backgroundImage: `url(${
+                  //     user.profile ? user.profile : Profile
+                  //   })`,
+                  // }}
+                >{(user.username).charAt(0).toUpperCase()}</div>
                 <div className="ml-[14px]">
                   <h1 className="font-poppins font-semibold text-lg text-black">
                     {user.username}

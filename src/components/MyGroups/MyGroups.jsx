@@ -76,9 +76,9 @@ export const MyGroups = () => {
             >
               <div className="flex items-center">
                 <div
-                  className="w-[70px] h-[70px] bg-center bg-cover rounded-full"
-                  style={{ backgroundImage: `url(${Profile1})` }}
-                ></div>
+                  className="bg-blue-100 text-3xl flex items-center justify-center font-bold text-[#000000b6] w-[70px] h-[70px] bg-center bg-cover rounded-full"
+                  // style={{ backgroundImage: `url(${Profile1})` }}
+                >{(group.groupName).charAt(0).toUpperCase()}</div>
                 <div className="ml-[14px]">
                   <h1 className="font-poppins font-semibold text-lg text-black">
                     {group.groupName}
