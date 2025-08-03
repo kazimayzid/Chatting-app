@@ -6,6 +6,8 @@ import { CiSearch } from "react-icons/ci";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { BiLogoTelegram } from "react-icons/bi";
 import EmojiPicker from "emoji-picker-react";
+import { MdEmojiEmotions } from "react-icons/md";
+
 import {
   getDatabase,
   onValue,
@@ -18,6 +20,7 @@ import { useSelector } from "react-redux";
 import { SlOptions } from "react-icons/sl";
 
 const Friends = () => {
+  const [showEmoji, setShowEmoji] = useState(false);
   const userData = useSelector((state) => state.user.value);
   const [friendsData, setFriendsData] = useState([]);
   const [chat, setChat] = useState([]);
@@ -67,12 +70,12 @@ const Friends = () => {
       blockerName: blockerName,
       blockerEmail: blockerEmail,
     });
-    console.log(user);
-
+    setOpenOptionIdx(false)
     remove(ref(db, `friends/${user.key}`));
   };
   const unfriendHandel = (user) => {
     remove(ref(db, `friends/${user.key}`));
+    setOpenOptionIdx(false)
   };
   const getChatId = (uid1, uid2) => {
     return [uid1, uid2].sort().join("_");
@@ -85,6 +88,8 @@ const Friends = () => {
     setChat([{ ...friend, chatId }]);
     setShow(true);
     listenToMessages(chatId);
+
+    setOpenOptionIdx(false)
   };
 
   const listenToMessages = (chatId) => {
@@ -122,6 +127,7 @@ const Friends = () => {
     });
 
     setMessage("");
+    setShowEmoji(false);
   };
 
   useEffect(() => {
@@ -130,6 +136,28 @@ const Friends = () => {
       chatBox.scrollTop = chatBox.scrollHeight;
     }
   }, [messages]);
+
+  const emojiHandle = () => {
+    setShowEmoji(!showEmoji);
+  };
+  const holdEmoji = (emojiData) => {
+    setMessage((prev) => prev + emojiData.emoji);
+  };
+
+  const formatDateTime = (timestamp) => {
+    const date = new Date(timestamp);
+    const options = {
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    };
+    return date.toLocaleString([], options);
+  };
+
+  const deleteIconShow = () => {
+    
+  }
 
   return (
     <>
@@ -154,7 +182,7 @@ const Friends = () => {
           </div>
           <div className=" mt-[15px] px-[22px] rounded-[20px] h-[85vh] overflow-y-auto">
             {friendsData.map((friend, index) => (
-              <div className="flex items-center justify-between pb-[13px] mb-[13px] border-b-[1px] border-[rgba(0,0,0,0.25)]">
+              <div className="flex items-center justify-between pb-[13px] mb-[13px] border-[1px] p-2 rounded-lg bg-[#6fc5ff1a] border-[rgba(0,0,0,0.08)]">
                 <div className="flex items-center">
                   <div
                     key={index}
@@ -194,7 +222,7 @@ const Friends = () => {
                     />
                   </p>
                   {openOptionIdx === index && (
-                    <div className=" absolute top-[-15px] gap-2 right-[30px] flex bg-indigo-50 py-2 px-2.5 rounded-lg">
+                    <div className=" absolute top-[-15px] gap-2 right-[30px] flex bg-transparent py-2 px-2.5 rounded-lg">
                       <button
                         onClick={() => unfriendHandel(friend)}
                         className="font-poppins border-black border-[1px] px-3 py-1 rounded-[6px] hover:bg-black hover:text-white duration-300 hover:scale-115"
@@ -220,7 +248,7 @@ const Friends = () => {
             ))}
           </div>
         </div>
-        <div className="w-[60%]  rounded-[20px] h-[98vh] px-5 py-4 shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
+        <div className="w-[70%]  rounded-[20px] h-[98vh] px-5 py-4 shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
           {show &&
             chat.length > 0 &&
             chat.map((items) => (
@@ -268,8 +296,9 @@ const Friends = () => {
                     <div className="chat-box flex-1 overflow-y-auto mt-4">
                       {messages.map((msg, i) => (
                         <div
+                          onClick={deleteIconShow}
                           key={i}
-                          className={`mb-2 ${
+                          className={`mb-2 cursor-pointer ${
                             msg.senderId === userData.uid
                               ? "text-right"
                               : "text-left"
@@ -284,6 +313,9 @@ const Friends = () => {
                           >
                             {msg.text}
                           </p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            {formatDateTime(msg.timestamp)}
+                          </p>
                         </div>
                       ))}
                     </div>
@@ -293,12 +325,19 @@ const Friends = () => {
                   <input
                     value={message}
                     onChange={messageHandle}
-                    className="w-[95%]  py-2 px-1 focus:outline-none bg-[#F1F1F1] rounded-[10px]"
+                    className=" w-[95%]  py-2 px-1 focus:outline-none bg-[#F1F1F1] rounded-[10px]"
                     type="text"
                   />
-                  <div className="absolute top-[-400px] ring-0">
-                    <EmojiPicker />
-                  </div>
+                  <MdEmojiEmotions
+                    onClick={emojiHandle}
+                    className="absolute top-[50%] right-[50px] cursor-pointer"
+                    size={18}
+                  />
+                  {showEmoji && (
+                    <div className="absolute top-[-440px] right-[50px] ">
+                      <EmojiPicker onEmojiClick={holdEmoji} />
+                    </div>
+                  )}
                   <button
                     onClick={() => messageButtonHandle(items)}
                     className="border-[1px] px-2 py-2 rounded-[10px] hover:bg-black duration-300 hover:text-white"

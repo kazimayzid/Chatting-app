@@ -76,7 +76,7 @@ export const BlockedUsers = () => {
                 {
                   userData.uid === block.blockerId ? <button 
                   onClick={() => handleUnblock(block)}
-                  className="font-poppins font-medium text-black hover:text-white hover:bg-green-700 border-2 border-green-700 duration-300 px-[8px] py-[4px] rounded-[5px] hover:scale-115">
+                  className="font-poppins font-medium text-black hover:text-white hover:bg-green-400 border-[1px] border-green-400 duration-300 px-[8px] py-[4px] rounded-[5px] hover:scale-115">
                   Unblock
                 </button> : <div> {block.blockerName} <span className="font-bold text-red-500">blocked</span> you </div>
                 }
