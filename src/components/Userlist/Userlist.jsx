@@ -15,6 +15,7 @@ export const Userlist = () => {
   const [friendRequestList, setFriendRequestList] = useState([])
   const db = getDatabase();
   const [userlist, setUserList] = useState([]);
+  const [filteredList, setFilteredList] = useState([])
   useEffect(() => {
     const starCountRef = ref(db, "users/");
     onValue(starCountRef, (snapshot) => {
@@ -100,7 +101,22 @@ export const Userlist = () => {
      setFriendRequestList(friendRequestArr)
     })
   }, [])
-  // friends data===================
+  
+  const searchHandle = (e) => {
+    let filterArr = [];
+    if (e.target.value.length === 0) {
+      setFilteredList([])
+    }else {
+      userlist.filter((items) => {
+        if (items.username.toLowerCase().includes(e.target.value.toLowerCase())) {
+          filterArr.push(items)
+          setFilteredList(filterArr)
+        }
+      })
+    }
+    
+  }
+  const displayList = filteredList.length > 0 ? filteredList : userlist;
 
   return (
     <>
@@ -113,6 +129,7 @@ export const Userlist = () => {
         </div>
         <div className="relative mx-5">
           <input
+            onChange={searchHandle}
             type="search"
             placeholder="Search"
             className="w-full px-4 border focus:outline-none placeholder:font-poppins placeholder:font-medium placeholder:text-[16px] placeholder:text-[rgba(61,61,61,0.35)] py-[17px] pl-[75px] rounded-[20px] border-none shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
@@ -123,7 +140,7 @@ export const Userlist = () => {
       </div>
 
       <div className=" mt-[15px] px-[22px] rounded-[20px] h-[75%] overflow-y-auto">
-        {userlist
+        {displayList
           .filter(
             (users) =>
               !friendList.includes(users.userid) &&
