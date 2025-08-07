@@ -18,6 +18,7 @@ import {
 } from "firebase/database";
 import { useSelector } from "react-redux";
 import { SlOptions } from "react-icons/sl";
+import moment from "moment/moment";
 
 const Friends = () => {
   const [showEmoji, setShowEmoji] = useState(false);
@@ -70,12 +71,12 @@ const Friends = () => {
       blockerName: blockerName,
       blockerEmail: blockerEmail,
     });
-    setOpenOptionIdx(false)
+    setOpenOptionIdx(false);
     remove(ref(db, `friends/${user.key}`));
   };
   const unfriendHandel = (user) => {
     remove(ref(db, `friends/${user.key}`));
-    setOpenOptionIdx(false)
+    setOpenOptionIdx(false);
   };
   const getChatId = (uid1, uid2) => {
     return [uid1, uid2].sort().join("_");
@@ -89,14 +90,20 @@ const Friends = () => {
     setShow(true);
     listenToMessages(chatId);
 
-    setOpenOptionIdx(false)
+    setOpenOptionIdx(false);
   };
 
   const listenToMessages = (chatId) => {
     const messagesRef = ref(db, `chats/${chatId}/messages`);
     onValue(messagesRef, (snapshot) => {
       if (snapshot.exists()) {
-        const msgs = Object.values(snapshot.val());
+        const msgs = [];
+        snapshot.forEach((item) => {
+          msgs.push({
+            key: item.key,
+            ...item.val(),
+          });
+        });
         msgs.sort((a, b) => a.timestamp - b.timestamp);
         setMessages(msgs);
       } else {
@@ -104,9 +111,9 @@ const Friends = () => {
       }
     });
   };
-
   const messageHandle = (e) => {
     setMessage(e.target.value);
+    setShowEmoji(false);
   };
 
   const messageButtonHandle = (chatUser) => {
@@ -124,6 +131,7 @@ const Friends = () => {
       senderId: userData.uid,
       text: message,
       timestamp: Date.now(),
+      time: moment().calendar(),
     });
 
     setMessage("");
@@ -144,20 +152,24 @@ const Friends = () => {
     setMessage((prev) => prev + emojiData.emoji);
   };
 
-  const formatDateTime = (timestamp) => {
-    const date = new Date(timestamp);
-    const options = {
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    };
-    return date.toLocaleString([], options);
-  };
+  // const formatDateTime = (timestamp) => {
+  //   const date = new Date(timestamp);
+  //   const options = {
+  //     month: "short",
+  //     day: "numeric",
+  //     hour: "2-digit",
+  //     minute: "2-digit",
+  //   };
+  //   return date.toLocaleString([], options);
+  // };
 
-  const deleteIconShow = () => {
+  const deleteIconShow = (messageKey) => {
+    console.log(messageKey, "key");
     
-  }
+    if (!chat.length) return;
+    const chatId = chat[0].chatId;
+    remove(ref(db, `chats/${chatId}/messages/${messageKey}`));
+  };
 
   return (
     <>
@@ -294,10 +306,10 @@ const Friends = () => {
                   </div>
                   <div className="flex-1 overflow-hidden overflow-y-auto max-h-[75vh]  mt-4">
                     <div className="chat-box flex-1 overflow-y-auto mt-4">
-                      {messages.map((msg, i) => (
+                      {messages.map((msg) => (
                         <div
-                          onClick={deleteIconShow}
-                          key={i}
+                          key={msg.key}
+                          onClick={() => deleteIconShow(msg.key)}
                           className={`mb-2 cursor-pointer ${
                             msg.senderId === userData.uid
                               ? "text-right"
@@ -314,7 +326,7 @@ const Friends = () => {
                             {msg.text}
                           </p>
                           <p className="text-xs text-gray-500 mt-1">
-                            {formatDateTime(msg.timestamp)}
+                            {msg.time}
                           </p>
                         </div>
                       ))}
@@ -335,7 +347,11 @@ const Friends = () => {
                   />
                   {showEmoji && (
                     <div className="absolute top-[-440px] right-[50px] ">
-                      <EmojiPicker onEmojiClick={holdEmoji} />
+                      <EmojiPicker
+                        theme="dark"
+                        emojiStyle="facebook"
+                        onEmojiClick={holdEmoji}
+                      />
                     </div>
                   )}
                   <button
