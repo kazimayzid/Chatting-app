@@ -7,6 +7,7 @@ import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import { BiLogoTelegram } from "react-icons/bi";
 import EmojiPicker from "emoji-picker-react";
 import { MdEmojiEmotions } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 
 import {
   getDatabase,
@@ -19,6 +20,7 @@ import {
 import { useSelector } from "react-redux";
 import { SlOptions } from "react-icons/sl";
 import moment from "moment/moment";
+import { FaReply } from "react-icons/fa";
 
 const Friends = () => {
   const [showEmoji, setShowEmoji] = useState(false);
@@ -164,11 +166,20 @@ const Friends = () => {
   // };
 
   const deleteIconShow = (messageKey) => {
-    console.log(messageKey, "key");
-    
     if (!chat.length) return;
     const chatId = chat[0].chatId;
     remove(ref(db, `chats/${chatId}/messages/${messageKey}`));
+  };
+
+  const [showOption, setShowOption] = useState(null);
+  const showOptionHandle = (key) => {
+    setShowOption((prev) => (prev === key ? null : key));
+  };
+
+  // Replay function section =========
+
+  const replyHandle = () => {
+    console.log("hwllo");
   };
 
   return (
@@ -308,16 +319,15 @@ const Friends = () => {
                     <div className="chat-box flex-1 overflow-y-auto mt-4">
                       {messages.map((msg) => (
                         <div
-                          key={msg.key}
-                          onClick={() => deleteIconShow(msg.key)}
-                          className={`mb-2 cursor-pointer ${
+                          onClick={() => showOptionHandle(msg.key)}
+                          className={`mb-2 cursor-pointer relative ${
                             msg.senderId === userData.uid
                               ? "text-right"
                               : "text-left"
                           }`}
                         >
                           <p
-                            className={`inline-block max-w-[70%] px-4 py-3 text-[15px] leading-5 rounded-lg ${
+                            className={`inline-block max-w-[70%] px-4 py-3 text-[15px] leading-5 rounded-lg relative ${
                               msg.senderId === userData.uid
                                 ? "bg-black text-white [clip-path:polygon(0%_0%,90%_0,91%_91%,100%_100%,69%_100%,26%_100%,0_100%)]"
                                 : "bg-gray-200 text-black [clip-path:polygon(8%_0,100%_0,100%_100%,100%_100%,69%_100%,0_100%,8%_90%)]"
@@ -328,6 +338,26 @@ const Friends = () => {
                           <p className="text-xs text-gray-500 mt-1">
                             {msg.time}
                           </p>
+                          {showOption === msg.key && (
+                            <div
+                              className={`backdrop-blur-[1px] absolute  flex gap-x-2 px-2 py-1 rounded-lg ${
+                                msg.senderId === userData.uid
+                                  ? "bottom-[-8px] right-0"
+                                  : "bottom-[-8px] left-0"
+                              }`}
+                            >
+                              <MdDelete
+                                className="hover:scale-120 duration-200"
+                                onClick={() => deleteIconShow(msg.key)}
+                                size={16}
+                              />
+                              <FaReply
+                                onClick={replyHandle}
+                                className="hover:scale-120 duration-200"
+                                size={16}
+                              />
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
